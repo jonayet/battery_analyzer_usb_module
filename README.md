@@ -1,2 +1,2 @@
-battery_analyzer_usb_interface
+battery_analyzer_usb_module
 ==============================
