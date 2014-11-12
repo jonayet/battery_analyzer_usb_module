@@ -1,0 +1,22 @@
+0	1	mikroCPIC1618.exe -MSF -DBG -pP18F2550 -RA -DL -O11111114 -fo24 -N"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\VoltageCurrentReadingModule\v1\FirmwareProject\v1.0\VoltageCurrentReadingModule.mcppi" -SP"C:\Users\Jonayet\Documents\Mikroelektronika\mikroC PRO for PIC\defs\" -SP"C:\Users\Jonayet\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\" -SP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\VoltageCurrentReadingModule\v1\FirmwareProject\v1.0\" -SP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\VoltageCurrentReadingModule\v1\FirmwareProject\v1.0\Library\" -IP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\VoltageCurrentReadingModule\v1\FirmwareProject\v1.0\" "HardwareProfile.c" "Interrupt.c" "Main.c" "USBdsc.c" "__Lib_Math.mcl" "__Lib_MathDouble.mcl" "__Lib_System.mcl" "__Lib_Delays.mcl" "__Lib_CString.mcl" "__Lib_Conversions.mcl" "__Lib_SoftI2C.mcl" "__Lib_USB_genHID.mcl" "__Lib_LcdConsts.mcl" "__Lib_Lcd.mcl"	 
+hint: 0	1139	Available RAM: 2027 [bytes], Available ROM: 32768 [bytes]	 
+diagnostics: 0	122	Compilation Started	P18F2550.c
+diagnostics: 1411	123	Compiled Successfully	P18F2550.c
+diagnostics: 0	122	Compilation Started	__Lib_Delays.c
+diagnostics: 172	123	Compiled Successfully	__Lib_Delays.c
+diagnostics: 0	122	Compilation Started	hardwareprofile.h
+diagnostics: 39	123	Compiled Successfully	HardwareProfile.c
+diagnostics: 0	122	Compilation Started	hardwareprofile.h
+diagnostics: 10	123	Compiled Successfully	Interrupt.c
+diagnostics: 0	122	Compilation Started	hardwareprofile.h
+diagnostics: 172	123	Compiled Successfully	Main.c
+hint: 89	1164	Variable 'i' has been eliminated by optimizer	Main.c
+diagnostics: 0	122	Compilation Started	USBdsc.c
+diagnostics: 166	123	Compiled Successfully	USBdsc.c
+diagnostics: 0	127	All files Compiled in 140 ms	 
+hint: 0	1144	Used RAM (bytes): 186 (9%)  Free RAM (bytes): 1841 (91%)	Used RAM (bytes): 186 (9%)  Free RAM (bytes): 1841 (91%)
+hint: 0	1144	Used ROM (bytes): 7502 (23%)  Free ROM (bytes): 25266 (77%)	Used ROM (bytes): 7502 (23%)  Free ROM (bytes): 25266 (77%)
+diagnostics: 0	125	Project Linked Successfully	VoltageCurrentReadingModule.mcppi
+diagnostics: 0	128	Linked in 63 ms	 
+diagnostics: 0	129	Project 'VoltageCurrentReadingModule.mcppi' completed: 360 ms	 
+diagnostics: 0	103	Finished successfully: 06 Aug 2014, 21:31:38	VoltageCurrentReadingModule.mcppi
