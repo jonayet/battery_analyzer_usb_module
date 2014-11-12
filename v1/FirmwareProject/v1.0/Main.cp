@@ -1,5 +1,5 @@
-#line 1 "F:/Projects/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
-#line 1 "f:/projects/embedded system/pearl enterprise/battery_analyzer_usb_module/v1/firmwareproject/v1.0/hardwareprofile.h"
+#line 1 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
+#line 1 "f:/projects/personal/embedded system/pearl enterprise/battery_analyzer_usb_module/v1/firmwareproject/v1.0/hardwareprofile.h"
 
 
 
@@ -16,8 +16,8 @@ sbit _DR_SIG at TRISC2_bit;
 void ConfigureIO();
 void ConfigureModules();
 void ConfigureInterrupts();
-#line 1 "f:/projects/embedded system/pearl enterprise/battery_analyzer_usb_module/v1/firmwareproject/v1.0/compilerdefinations.h"
-#line 1 "f:/projects/embedded system/pearl enterprise/battery_analyzer_usb_module/v1/firmwareproject/v1.0/library/mcp3304.h"
+#line 1 "f:/projects/personal/embedded system/pearl enterprise/battery_analyzer_usb_module/v1/firmwareproject/v1.0/compilerdefinations.h"
+#line 1 "f:/projects/personal/embedded system/pearl enterprise/battery_analyzer_usb_module/v1/firmwareproject/v1.0/library/mcp3304.h"
 
 
 
@@ -69,7 +69,7 @@ typedef unsigned int uintptr_t;
 
 typedef signed long int intmax_t;
 typedef unsigned long int uintmax_t;
-#line 38 "F:/Projects/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
+#line 38 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
 sbit LCD_EN at LATC1_bit;
 sbit LCD_RS at LATC0_bit;
 sbit LCD_D7 at LATB5_bit;
@@ -107,7 +107,7 @@ void main()
  ConfigureIO();
  ConfigureModules();
  ConfigureInterrupts();
-#line 87 "F:/Projects/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
+#line 87 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
  SPI1_Init_Advanced(_SPI_MASTER_OSC_DIV16, _SPI_DATA_SAMPLE_MIDDLE, _SPI_CLK_IDLE_LOW, _SPI_LOW_2_HIGH);
 
 
@@ -183,7 +183,7 @@ void main()
  USBDev_SendPacket(1, writebuff, 64);
  while(!UsbDataSentFlag) { }
 
- delay_ms(10);
+
  }
 }
 

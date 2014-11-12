@@ -217,16 +217,6 @@ L_main11:
 	GOTO        L_main12
 	GOTO        L_main11
 L_main12:
-;Main.c,162 :: 		delay_ms(10);
-	MOVLW       156
-	MOVWF       R12, 0
-	MOVLW       215
-	MOVWF       R13, 0
-L_main13:
-	DECFSZ      R13, 1, 1
-	BRA         L_main13
-	DECFSZ      R12, 1, 1
-	BRA         L_main13
 ;Main.c,163 :: 		}
 	GOTO        L_main2
 ;Main.c,164 :: 		}
@@ -238,9 +228,9 @@ _USBDev_EventHandler:
 
 ;Main.c,167 :: 		void USBDev_EventHandler(uint8_t event)
 ;Main.c,169 :: 		switch(event)
-	GOTO        L_USBDev_EventHandler14
+	GOTO        L_USBDev_EventHandler13
 ;Main.c,172 :: 		case _USB_DEV_EVENT_CONFIGURED:
-L_USBDev_EventHandler16:
+L_USBDev_EventHandler15:
 ;Main.c,174 :: 		USBDev_SetReceiveBuffer(1, readbuff);
 	MOVLW       1
 	MOVWF       FARG_USBDev_SetReceiveBuffer_epNum+0 
@@ -250,14 +240,14 @@ L_USBDev_EventHandler16:
 	MOVWF       FARG_USBDev_SetReceiveBuffer_dataBuffer+1 
 	CALL        _USBDev_SetReceiveBuffer+0, 0
 ;Main.c,175 :: 		break;
-	GOTO        L_USBDev_EventHandler15
+	GOTO        L_USBDev_EventHandler14
 ;Main.c,176 :: 		}
-L_USBDev_EventHandler14:
+L_USBDev_EventHandler13:
 	MOVF        FARG_USBDev_EventHandler_event+0, 0 
 	XORLW       5
 	BTFSC       STATUS+0, 2 
-	GOTO        L_USBDev_EventHandler16
-L_USBDev_EventHandler15:
+	GOTO        L_USBDev_EventHandler15
+L_USBDev_EventHandler14:
 ;Main.c,177 :: 		}
 L_end_USBDev_EventHandler:
 	RETURN      0
@@ -270,12 +260,12 @@ _USBDev_DataReceivedHandler:
 	MOVF        FARG_USBDev_DataReceivedHandler_ep+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
-	GOTO        L_USBDev_DataReceivedHandler17
+	GOTO        L_USBDev_DataReceivedHandler16
 ;Main.c,184 :: 		dataReceivedFlag = 1;
 	MOVLW       1
 	MOVWF       _dataReceivedFlag+0 
 ;Main.c,185 :: 		}
-L_USBDev_DataReceivedHandler17:
+L_USBDev_DataReceivedHandler16:
 ;Main.c,186 :: 		}
 L_end_USBDev_DataReceivedHandler:
 	RETURN      0
@@ -288,7 +278,7 @@ _USBDev_DataSentHandler:
 	MOVF        FARG_USBDev_DataSentHandler_ep+0, 0 
 	XORLW       1
 	BTFSS       STATUS+0, 2 
-	GOTO        L_USBDev_DataSentHandler18
+	GOTO        L_USBDev_DataSentHandler17
 ;Main.c,193 :: 		UsbDataSentFlag = 1;
 	MOVLW       1
 	MOVWF       _UsbDataSentFlag+0 
@@ -301,7 +291,7 @@ _USBDev_DataSentHandler:
 	MOVWF       FARG_USBDev_SetReceiveBuffer_dataBuffer+1 
 	CALL        _USBDev_SetReceiveBuffer+0, 0
 ;Main.c,196 :: 		}
-L_USBDev_DataSentHandler18:
+L_USBDev_DataSentHandler17:
 ;Main.c,197 :: 		}
 L_end_USBDev_DataSentHandler:
 	RETURN      0

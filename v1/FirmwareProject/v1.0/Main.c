@@ -159,7 +159,7 @@ void main()
         USBDev_SendPacket(1, writebuff, 64);
         while(!UsbDataSentFlag) { }
         
-        delay_ms(10);
+//        delay_ms(10);
     }
 }
 

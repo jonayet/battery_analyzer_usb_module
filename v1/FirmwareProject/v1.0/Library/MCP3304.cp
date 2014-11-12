@@ -1,5 +1,5 @@
-#line 1 "F:/Projects/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Library/MCP3304.c"
-#line 1 "f:/projects/embedded system/pearl enterprise/battery_analyzer_usb_module/v1/firmwareproject/v1.0/library/mcp3304.h"
+#line 1 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Library/MCP3304.c"
+#line 1 "f:/projects/personal/embedded system/pearl enterprise/battery_analyzer_usb_module/v1/firmwareproject/v1.0/library/mcp3304.h"
 
 
 
@@ -9,7 +9,7 @@ extern unsigned int MCP3304_Data;
 void MCP3304_Init();
 void MCP3304_Read(unsigned char Channel);
 #line 1 "c:/users/jonayet.hossain/documents/mikroelektronika/mikroc pro for pic/include/built_in.h"
-#line 4 "F:/Projects/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Library/MCP3304.c"
+#line 4 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Library/MCP3304.c"
 void MCP3304_Init()
 {
   LATC6_Bit  = 1;

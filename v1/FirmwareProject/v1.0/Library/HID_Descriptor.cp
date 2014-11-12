@@ -1,4 +1,4 @@
-#line 1 "F:/Projects/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Library/HID_Descriptor.c"
+#line 1 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Library/HID_Descriptor.c"
 #line 1 "c:/users/jonayet.hossain/documents/mikroelektronika/mikroc pro for pic/include/stdint.h"
 
 
@@ -41,7 +41,7 @@ typedef unsigned int uintptr_t;
 
 typedef signed long int intmax_t;
 typedef unsigned long int uintmax_t;
-#line 10 "F:/Projects/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Library/HID_Descriptor.c"
+#line 10 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Library/HID_Descriptor.c"
 const uint8_t _USB_HID_MANUFACTURER_STRING[] = "Mikroelektronika";
 const uint8_t _USB_HID_PRODUCT_STRING[] = "HID Custom Demo";
 const uint8_t _USB_HID_SERIALNUMBER_STRING[] = "0x00000003";
