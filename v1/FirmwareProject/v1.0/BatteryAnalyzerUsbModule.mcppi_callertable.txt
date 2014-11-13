@@ -9,7 +9,11 @@ main
 		USBDev_DisableAllEp
 		USBDev_InitBDandPipes
 	MCP3304_Init
+	LoadConstantsAndOffsets
+		EEPROM_Read
 	USBDev_GetDeviceState
+	SaveConstantsAndOffsets
+		EEPROM_Write
 	MCP3304_Read
 		SPI1_Read
 	Mul_16x16_U

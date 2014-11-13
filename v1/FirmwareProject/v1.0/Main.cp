@@ -90,9 +90,17 @@ unsigned char readbuff[64] absolute 0x500;
 unsigned char writebuff[64] absolute 0x540;
 volatile char dataReceivedFlag = 0;
 volatile char UsbDataSentFlag = 0;
+
+
 unsigned int MCP3304_Data;
-signed int Voltage = 0;
-signed int Current = 0;
+float Voltage_Constant;
+unsigned int Voltage_offset;
+float Current_Constant;
+unsigned int Current_offset;
+
+void SaveConstantsAndOffsets();
+void LoadConstantsAndOffsets();
+
 
 
 void main()
@@ -107,7 +115,7 @@ void main()
  ConfigureIO();
  ConfigureModules();
  ConfigureInterrupts();
-#line 87 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
+#line 95 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
  SPI1_Init_Advanced(_SPI_MASTER_OSC_DIV16, _SPI_DATA_SAMPLE_MIDDLE, _SPI_CLK_IDLE_LOW, _SPI_LOW_2_HIGH);
 
 
@@ -126,6 +134,9 @@ void main()
  MCP3304_Init();
 
 
+ LoadConstantsAndOffsets();
+
+
  while(USBDev_GetDeviceState() != _USB_DEV_STATE_CONFIGURED) { }
 
 
@@ -139,6 +150,17 @@ void main()
 
  _OP_SIG = 1;
 
+
+
+ if(dataReceivedFlag)
+ {
+ if(readbuff[0] ==  0xA3 )
+ {
+ SaveConstantsAndOffsets();
+ LoadConstantsAndOffsets();
+ }
+ dataReceivedFlag = 0;
+ }
 
 
  buffIndex = 0;
@@ -182,9 +204,65 @@ void main()
  UsbDataSentFlag = 0;
  USBDev_SendPacket(1, writebuff, 64);
  while(!UsbDataSentFlag) { }
-
-
  }
+}
+
+void SaveConstantsAndOffsets()
+{
+
+ EEPROM_Write(0, readbuff[1]);
+ Delay_ms(5);
+ EEPROM_Write(1, readbuff[2]);
+ Delay_ms(5);
+ EEPROM_Write(2, readbuff[3]);
+ Delay_ms(5);
+ EEPROM_Write(3, readbuff[4]);
+ Delay_ms(5);
+
+
+ EEPROM_Write(4, readbuff[5]);
+ Delay_ms(5);
+ EEPROM_Write(5, readbuff[6]);
+ Delay_ms(5);
+
+
+ EEPROM_Write(6, readbuff[7]);
+ Delay_ms(5);
+ EEPROM_Write(7, readbuff[8]);
+ Delay_ms(5);
+ EEPROM_Write(8, readbuff[9]);
+ Delay_ms(5);
+ EEPROM_Write(9, readbuff[10]);
+ Delay_ms(5);
+
+
+ EEPROM_Write(10, readbuff[11]);
+ Delay_ms(5);
+ EEPROM_Write(11, readbuff[12]);
+ Delay_ms(5);
+}
+
+void LoadConstantsAndOffsets()
+{
+
+ writebuff[52] = EEPROM_Read(0);
+ writebuff[53] = EEPROM_Read(1);
+ writebuff[54] = EEPROM_Read(2);
+ writebuff[55] = EEPROM_Read(3);
+
+
+ writebuff[56] = EEPROM_Read(4);
+ writebuff[57] = EEPROM_Read(5);
+
+
+ writebuff[58] = EEPROM_Read(6);
+ writebuff[59] = EEPROM_Read(7);
+ writebuff[60] = EEPROM_Read(8);
+ writebuff[61] = EEPROM_Read(9);
+
+
+ writebuff[62] = EEPROM_Read(10);
+ writebuff[63] = EEPROM_Read(11);
 }
 
 

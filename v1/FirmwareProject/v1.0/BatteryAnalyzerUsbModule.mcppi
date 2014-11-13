@@ -8,13 +8,13 @@ Value=0
 [ACTIVE_TAB]
 Value=Main.c
 [USE_EEPROM]
-Value=0
+Value=1
 [USE_HEAP]
 Value=0
 [HEAP_SIZE]
 Value=2000
 [EEPROM_DEFINITION]
-Value=
+Value=Library\MCP3304.h
 [FILES]
 Count=5
 File0=HardwareProfile.c
@@ -28,11 +28,11 @@ Count=0
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=2
+Count=1
 File0=Main.c
-File1=HardwareProfile.c
 [EEPROM]
-Count=0
+Count=1
+File0=eeprom_data.ihex
 [ACTIVE_COMMENTS_FILES]
 Count=0
 [OTHER_FILES]
@@ -67,12 +67,14 @@ File2=Library\MCP3304.h
 [PLDS]
 Count=0
 [Useses]
-Count=3
+Count=4
 File0=SPI
 File1=USB_Device_HIDClass_PIC18F
 File2=USB_Device_PIC18F
+File3=EEPROM
 [EXPANDED NODES]
 Node1=Sources
 Node2=Header Files
-Node3=Output Files
-Count=3
+Node3=EEPROM Files
+Node4=Output Files
+Count=4

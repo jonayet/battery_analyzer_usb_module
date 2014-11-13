@@ -55,9 +55,17 @@ unsigned char readbuff[64] absolute 0x500;
 unsigned char writebuff[64] absolute 0x540;
 volatile char dataReceivedFlag = 0;
 volatile char UsbDataSentFlag = 0;
+
+#define CMD_SET_CALIBRATION 0xA3
 unsigned int MCP3304_Data;
-signed int Voltage = 0;
-signed int Current = 0;
+float Voltage_Constant;
+unsigned int Voltage_offset;
+float Current_Constant;
+unsigned int Current_offset;
+
+void SaveConstantsAndOffsets();
+void LoadConstantsAndOffsets();
+
 
 /*** Main function of the project ***/
 void main()
@@ -101,6 +109,9 @@ void main()
     // config MCP3304
     MCP3304_Init();
     
+    // load Constants & Offsets of Voltage & Current from EEPROM
+    LoadConstantsAndOffsets();
+    
     // Wait until device is configured (enumeration is successfully finished)
     while(USBDev_GetDeviceState() != _USB_DEV_STATE_CONFIGURED) { }
 
@@ -115,6 +126,17 @@ void main()
         ///////////////////// DEBUG - 1ms loop ////////////////
         _OP_SIG = 1;
         ///////////////////////////////////////////////////////
+        
+        // save and update Constatnts & Offsets if CMD_SET_CALIBRATION found
+        if(dataReceivedFlag)
+        {
+            if(readbuff[0] == CMD_SET_CALIBRATION)
+            {
+                SaveConstantsAndOffsets();
+                LoadConstantsAndOffsets();
+            }
+            dataReceivedFlag = 0;
+        }
         
         // Voltage to buffer
         buffIndex = 0;
@@ -158,9 +180,65 @@ void main()
         UsbDataSentFlag = 0;
         USBDev_SendPacket(1, writebuff, 64);
         while(!UsbDataSentFlag) { }
-        
-//        delay_ms(10);
     }
+}
+
+void SaveConstantsAndOffsets()
+{
+    // save Voltage_Constant
+    EEPROM_Write(0, readbuff[1]);                     // Lo(Voltage_Constant)
+    Delay_ms(5);
+    EEPROM_Write(1, readbuff[2]);                     // Hi(Voltage_Constant)
+    Delay_ms(5);
+    EEPROM_Write(2, readbuff[3]);                     // Higher(Voltage_Constant)
+    Delay_ms(5);
+    EEPROM_Write(3, readbuff[4]);                     // Highest(Voltage_Constant)
+    Delay_ms(5);
+
+    // save Voltage_Constant
+    EEPROM_Write(4, readbuff[5]);                     // Lo(Voltage_offset)
+    Delay_ms(5);
+    EEPROM_Write(5, readbuff[6]);                     // Hi(Voltage_offset)
+    Delay_ms(5);
+
+    // save Current_Constant
+    EEPROM_Write(6, readbuff[7]);                     // Lo(Current_Constant)
+    Delay_ms(5);
+    EEPROM_Write(7, readbuff[8]);                     // Hi(Current_Constant)
+    Delay_ms(5);
+    EEPROM_Write(8, readbuff[9]);                     // Higher(Current_Constant)
+    Delay_ms(5);
+    EEPROM_Write(9, readbuff[10]);                     // Highest(Current_Constant)
+    Delay_ms(5);
+
+    // save Current_Constant
+    EEPROM_Write(10, readbuff[11]);                    // Lo(Current_offset)
+    Delay_ms(5);
+    EEPROM_Write(11, readbuff[12]);                    // Hi(Current_offset)
+    Delay_ms(5);
+}
+
+void LoadConstantsAndOffsets()
+{
+    // load Voltage_Constant
+    writebuff[52] = EEPROM_Read(0);                     // Lo(Voltage_Constant)
+    writebuff[53] = EEPROM_Read(1);                     // Hi(Voltage_Constant)
+    writebuff[54] = EEPROM_Read(2);                     // Higher(Voltage_Constant)
+    writebuff[55] = EEPROM_Read(3);                     // Highest(Voltage_Constant)
+
+    // load Voltage_Constant
+    writebuff[56] = EEPROM_Read(4);                     // Lo(Voltage_offset)
+    writebuff[57] = EEPROM_Read(5);                     // Hi(Voltage_offset)
+
+    // load Current_Constant
+    writebuff[58] = EEPROM_Read(6);                     // Lo(Current_Constant)
+    writebuff[59] = EEPROM_Read(7);                     // Hi(Current_Constant)
+    writebuff[60] = EEPROM_Read(8);                     // Higher(Current_Constant)
+    writebuff[61] = EEPROM_Read(9);                     // Highest(Current_Constant)
+
+    // load Current_Constant
+    writebuff[62] = EEPROM_Read(10);                    // Lo(Current_offset)
+    writebuff[63] = EEPROM_Read(11);                    // Hi(Current_offset)
 }
 
 // USB Device callback function called for various events

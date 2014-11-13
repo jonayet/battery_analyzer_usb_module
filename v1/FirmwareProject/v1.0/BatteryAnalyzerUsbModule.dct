@@ -310,7 +310,8 @@ cren
 cren_bit
 csrc
 csrc_bit
-current
+current_constant
+current_offset
 cvr0
 cvr0_bit
 cvr1
@@ -408,6 +409,8 @@ eeip
 eeip_bit
 eepgd
 eepgd_bit
+eeprom_read
+eeprom_write
 endp0
 endp0_bit
 endp1
@@ -726,6 +729,7 @@ lcd_en
 lcd_en_direction
 lcd_rs
 lcd_rs_direction
+loadconstantsandoffsets
 longint2double
 longjmp
 longword2double
@@ -1023,6 +1027,7 @@ rxdtp
 rxdtp_bit
 s
 s_bit
+saveconstantsandoffsets
 sboren
 sboren_bit
 sckp
@@ -1407,7 +1412,8 @@ vdelay_advanced_ms
 vdelay_ms
 vdirmag
 vdirmag_bit
-voltage
+voltage_constant
+voltage_offset
 vrefm
 vrefm_bit
 vrefp
