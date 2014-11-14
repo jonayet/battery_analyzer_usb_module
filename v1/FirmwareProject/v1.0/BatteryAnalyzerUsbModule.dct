@@ -298,6 +298,8 @@ compare_double
 configureinterrupts
 configureio
 configuremodules
+convertieee754floattomicrochip
+convertmicrochipfloattoieee754
 crc16ee
 crc16ee_bit
 crc16ef
@@ -906,6 +908,7 @@ pssac0
 pssac0_bit
 pssac1
 pssac1_bit
+ptr
 r
 r_bit
 r_not_w
@@ -1048,6 +1051,7 @@ setfov32
 setfun32
 setiov3224
 setjmp
+sign
 smp
 smp_bit
 sofie

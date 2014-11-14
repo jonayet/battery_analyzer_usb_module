@@ -30,6 +30,7 @@
 // include all header files here
 #include "HardwareProfile.h"
 #include "CompilerDefinations.h"
+#include "Library/FloatConverter.h"
 #include "Library/MCP3304.h"
 #include "built_in.h"
 #include <stdint.h>
@@ -59,9 +60,9 @@ volatile char UsbDataSentFlag = 0;
 #define CMD_SET_CALIBRATION 0xA3
 unsigned int MCP3304_Data;
 float Voltage_Constant;
-unsigned int Voltage_offset;
+int Voltage_offset;
 float Current_Constant;
-unsigned int Current_offset;
+int Current_offset;
 
 void SaveConstantsAndOffsets();
 void LoadConstantsAndOffsets();
@@ -183,40 +184,64 @@ void main()
     }
 }
 
+
 void SaveConstantsAndOffsets()
 {
-    // save Voltage_Constant
-    EEPROM_Write(0, readbuff[1]);                     // Lo(Voltage_Constant)
-    Delay_ms(5);
-    EEPROM_Write(1, readbuff[2]);                     // Hi(Voltage_Constant)
-    Delay_ms(5);
-    EEPROM_Write(2, readbuff[3]);                     // Higher(Voltage_Constant)
-    Delay_ms(5);
-    EEPROM_Write(3, readbuff[4]);                     // Highest(Voltage_Constant)
-    Delay_ms(5);
+    // get Voltage_Constant from usb data
+    Lo(Voltage_Constant) = readbuff[1];
+    Hi(Voltage_Constant) = readbuff[2];
+    Higher(Voltage_Constant) = readbuff[3];
+    Highest(Voltage_Constant) = readbuff[4];
+    ConvertIEEE754FloatToMicrochip(&Voltage_Constant);
+    
+    // Voltage_Constant = 0?, dont save Voltage calibration
+    if(Voltage_Constant != 0)
+    {
+        // save Voltage_Constant
+        EEPROM_Write(0, readbuff[1]);                     // Lo(Voltage_Constant)
+        Delay_ms(5);
+        EEPROM_Write(1, readbuff[2]);                     // Hi(Voltage_Constant)
+        Delay_ms(5);
+        EEPROM_Write(2, readbuff[3]);                     // Higher(Voltage_Constant)
+        Delay_ms(5);
+        EEPROM_Write(3, readbuff[4]);                     // Highest(Voltage_Constant)
+        Delay_ms(5);
 
-    // save Voltage_Constant
-    EEPROM_Write(4, readbuff[5]);                     // Lo(Voltage_offset)
-    Delay_ms(5);
-    EEPROM_Write(5, readbuff[6]);                     // Hi(Voltage_offset)
-    Delay_ms(5);
+        // save Voltage_offset
+        EEPROM_Write(4, readbuff[5]);                     // Lo(Voltage_offset)
+        Delay_ms(5);
+        EEPROM_Write(5, readbuff[6]);                     // Hi(Voltage_offset)
+        Delay_ms(5);
+    }
 
-    // save Current_Constant
-    EEPROM_Write(6, readbuff[7]);                     // Lo(Current_Constant)
-    Delay_ms(5);
-    EEPROM_Write(7, readbuff[8]);                     // Hi(Current_Constant)
-    Delay_ms(5);
-    EEPROM_Write(8, readbuff[9]);                     // Higher(Current_Constant)
-    Delay_ms(5);
-    EEPROM_Write(9, readbuff[10]);                     // Highest(Current_Constant)
-    Delay_ms(5);
+    // get Current_Constant from usb data
+    Lo(Current_Constant) = readbuff[7];
+    Hi(Current_Constant) = readbuff[8];
+    Higher(Current_Constant) = readbuff[9];
+    Highest(Current_Constant) = readbuff[10];
+    ConvertIEEE754FloatToMicrochip(&Current_Constant);
 
-    // save Current_Constant
-    EEPROM_Write(10, readbuff[11]);                    // Lo(Current_offset)
-    Delay_ms(5);
-    EEPROM_Write(11, readbuff[12]);                    // Hi(Current_offset)
-    Delay_ms(5);
+    // Current_Constant = 0?, dont save Current calibration
+    if(Current_Constant != 0)
+    {
+        // save Current_Constant
+        EEPROM_Write(6, readbuff[7]);                     // Lo(Current_Constant)
+        Delay_ms(5);
+        EEPROM_Write(7, readbuff[8]);                     // Hi(Current_Constant)
+        Delay_ms(5);
+        EEPROM_Write(8, readbuff[9]);                     // Higher(Current_Constant)
+        Delay_ms(5);
+        EEPROM_Write(9, readbuff[10]);                    // Highest(Current_Constant)
+        Delay_ms(5);
+
+        // save Current_Constant
+        EEPROM_Write(10, readbuff[11]);                   // Lo(Current_offset)
+        Delay_ms(5);
+        EEPROM_Write(11, readbuff[12]);                   // Hi(Current_offset)
+        Delay_ms(5);
+    }
 }
+
 
 void LoadConstantsAndOffsets()
 {

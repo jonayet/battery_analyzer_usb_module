@@ -1,5 +1,5 @@
-#line 1 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
-#line 1 "f:/projects/personal/embedded system/pearl enterprise/battery_analyzer_usb_module/v1/firmwareproject/v1.0/hardwareprofile.h"
+#line 1 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
+#line 1 "e:/workplace/projects/embedded/pearlenterprise/engineanalyzer/battery_analyzer_usb_module/v1/firmwareproject/v1.0/hardwareprofile.h"
 
 
 
@@ -16,8 +16,11 @@ sbit _DR_SIG at TRISC2_bit;
 void ConfigureIO();
 void ConfigureModules();
 void ConfigureInterrupts();
-#line 1 "f:/projects/personal/embedded system/pearl enterprise/battery_analyzer_usb_module/v1/firmwareproject/v1.0/compilerdefinations.h"
-#line 1 "f:/projects/personal/embedded system/pearl enterprise/battery_analyzer_usb_module/v1/firmwareproject/v1.0/library/mcp3304.h"
+#line 1 "e:/workplace/projects/embedded/pearlenterprise/engineanalyzer/battery_analyzer_usb_module/v1/firmwareproject/v1.0/compilerdefinations.h"
+#line 1 "e:/workplace/projects/embedded/pearlenterprise/engineanalyzer/battery_analyzer_usb_module/v1/firmwareproject/v1.0/library/floatconverter.h"
+void ConvertIEEE754FloatToMicrochip(float *f);
+void ConvertMicrochipFloatToIEEE754(float *f);
+#line 1 "e:/workplace/projects/embedded/pearlenterprise/engineanalyzer/battery_analyzer_usb_module/v1/firmwareproject/v1.0/library/mcp3304.h"
 
 
 
@@ -26,8 +29,8 @@ extern unsigned int MCP3304_Data;
 
 void MCP3304_Init();
 void MCP3304_Read(unsigned char Channel);
-#line 1 "c:/users/jonayet.hossain/documents/mikroelektronika/mikroc pro for pic/include/built_in.h"
-#line 1 "c:/users/jonayet.hossain/documents/mikroelektronika/mikroc pro for pic/include/stdint.h"
+#line 1 "c:/users/jonayet/documents/mikroelektronika/mikroc pro for pic/include/built_in.h"
+#line 1 "c:/users/jonayet/documents/mikroelektronika/mikroc pro for pic/include/stdint.h"
 
 
 
@@ -69,7 +72,7 @@ typedef unsigned int uintptr_t;
 
 typedef signed long int intmax_t;
 typedef unsigned long int uintmax_t;
-#line 38 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
+#line 39 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
 sbit LCD_EN at LATC1_bit;
 sbit LCD_RS at LATC0_bit;
 sbit LCD_D7 at LATB5_bit;
@@ -94,9 +97,9 @@ volatile char UsbDataSentFlag = 0;
 
 unsigned int MCP3304_Data;
 float Voltage_Constant;
-unsigned int Voltage_offset;
+int Voltage_offset;
 float Current_Constant;
-unsigned int Current_offset;
+int Current_offset;
 
 void SaveConstantsAndOffsets();
 void LoadConstantsAndOffsets();
@@ -115,7 +118,7 @@ void main()
  ConfigureIO();
  ConfigureModules();
  ConfigureInterrupts();
-#line 95 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
+#line 96 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
  SPI1_Init_Advanced(_SPI_MASTER_OSC_DIV16, _SPI_DATA_SAMPLE_MIDDLE, _SPI_CLK_IDLE_LOW, _SPI_LOW_2_HIGH);
 
 
@@ -207,8 +210,19 @@ void main()
  }
 }
 
+
 void SaveConstantsAndOffsets()
 {
+
+  ((char *)&Voltage_Constant)[0]  = readbuff[1];
+  ((char *)&Voltage_Constant)[1]  = readbuff[2];
+  ((char *)&Voltage_Constant)[2]  = readbuff[3];
+  ((char *)&Voltage_Constant)[3]  = readbuff[4];
+ ConvertIEEE754FloatToMicrochip(&Voltage_Constant);
+
+
+ if(Voltage_Constant != 0)
+ {
 
  EEPROM_Write(0, readbuff[1]);
  Delay_ms(5);
@@ -224,7 +238,18 @@ void SaveConstantsAndOffsets()
  Delay_ms(5);
  EEPROM_Write(5, readbuff[6]);
  Delay_ms(5);
+ }
 
+
+  ((char *)&Current_Constant)[0]  = readbuff[7];
+  ((char *)&Current_Constant)[1]  = readbuff[8];
+  ((char *)&Current_Constant)[2]  = readbuff[9];
+  ((char *)&Current_Constant)[3]  = readbuff[10];
+ ConvertIEEE754FloatToMicrochip(&Current_Constant);
+
+
+ if(Current_Constant != 0)
+ {
 
  EEPROM_Write(6, readbuff[7]);
  Delay_ms(5);
@@ -240,7 +265,9 @@ void SaveConstantsAndOffsets()
  Delay_ms(5);
  EEPROM_Write(11, readbuff[12]);
  Delay_ms(5);
+ }
 }
+
 
 void LoadConstantsAndOffsets()
 {

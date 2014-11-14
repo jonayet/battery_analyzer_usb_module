@@ -13,6 +13,8 @@ main
 		EEPROM_Read
 	USBDev_GetDeviceState
 	SaveConstantsAndOffsets
+		ConvertIEEE754FloatToMicrochip
+		Equals_Double
 		EEPROM_Write
 	MCP3304_Read
 		SPI1_Read
