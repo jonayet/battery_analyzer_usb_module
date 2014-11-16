@@ -34,10 +34,10 @@ diagnostics: 0	122	Compilation Started	stdint.h
 diagnostics: 146	123	Compiled Successfully	HID_Descriptor.c
 diagnostics: 0	122	Compilation Started	floatconverter.h
 diagnostics: 21	123	Compiled Successfully	FloatConverter.c
-diagnostics: 0	127	All files Compiled in 218 ms	 
+diagnostics: 0	127	All files Compiled in 235 ms	 
 hint: 0	1144	Used RAM (bytes): 915 (45%)  Free RAM (bytes): 1112 (55%)	Used RAM (bytes): 915 (45%)  Free RAM (bytes): 1112 (55%)
 hint: 0	1144	Used ROM (bytes): 9098 (28%)  Free ROM (bytes): 23670 (72%)	Used ROM (bytes): 9098 (28%)  Free ROM (bytes): 23670 (72%)
 diagnostics: 0	125	Project Linked Successfully	BatteryAnalyzerUsbModule.mcppi
-diagnostics: 0	128	Linked in 78 ms	 
-diagnostics: 0	129	Project 'BatteryAnalyzerUsbModule.mcppi' completed: 500 ms	 
-diagnostics: 0	103	Finished successfully: 15 Nov 2014, 02:19:25	BatteryAnalyzerUsbModule.mcppi
+diagnostics: 0	128	Linked in 109 ms	 
+diagnostics: 0	129	Project 'BatteryAnalyzerUsbModule.mcppi' completed: 547 ms	 
+diagnostics: 0	103	Finished successfully: 15 Nov 2014, 17:32:52	BatteryAnalyzerUsbModule.mcppi

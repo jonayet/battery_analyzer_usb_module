@@ -3,9 +3,9 @@ _MCP3304_Init:
 
 ;MCP3304.c,4 :: 		void MCP3304_Init()
 ;MCP3304.c,6 :: 		_MCP3304_OP_CS = 1;
-	BSF         LATC6_bit+0, BitPos(LATC6_bit+0) 
+	BSF         LATB2_bit+0, BitPos(LATB2_bit+0) 
 ;MCP3304.c,7 :: 		_MCP3304_DR_CS = 0;
-	BCF         TRISC6_bit+0, BitPos(TRISC6_bit+0) 
+	BCF         TRISB2_bit+0, BitPos(TRISB2_bit+0) 
 ;MCP3304.c,8 :: 		MCP3304_Data = 0;
 	CLRF        _MCP3304_Data+0 
 	CLRF        _MCP3304_Data+1 
@@ -18,7 +18,7 @@ _MCP3304_Read:
 
 ;MCP3304.c,13 :: 		void MCP3304_Read(unsigned char Channel)
 ;MCP3304.c,16 :: 		_MCP3304_OP_CS = 0;
-	BCF         LATC6_bit+0, BitPos(LATC6_bit+0) 
+	BCF         LATB2_bit+0, BitPos(LATB2_bit+0) 
 ;MCP3304.c,18 :: 		D0 = 0;
 	CLRF        _D0+0 
 ;MCP3304.c,19 :: 		D2D1 = 0;
@@ -58,7 +58,7 @@ L_MCP3304_Read2:
 	MOVF        R0, 0 
 	MOVWF       _MCP3304_Data+0 
 ;MCP3304.c,34 :: 		_MCP3304_OP_CS = 1;
-	BSF         LATC6_bit+0, BitPos(LATC6_bit+0) 
+	BSF         LATB2_bit+0, BitPos(LATB2_bit+0) 
 ;MCP3304.c,37 :: 		if(MCP3304_Data & 0x1000)
 	BTFSS       _MCP3304_Data+1, 4 
 	GOTO        L_MCP3304_Read3

@@ -12,8 +12,8 @@ void MCP3304_Read(unsigned char Channel);
 #line 4 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Library/MCP3304.c"
 void MCP3304_Init()
 {
-  LATC6_Bit  = 1;
-  TRISC6_Bit  = 0;
+  LATB2_Bit  = 1;
+  TRISB2_Bit  = 0;
  MCP3304_Data = 0;
 }
 
@@ -22,7 +22,7 @@ unsigned char D2D1, D0;
 void MCP3304_Read(unsigned char Channel)
 {
 
-  LATC6_Bit  = 0;
+  LATB2_Bit  = 0;
 
  D0 = 0;
  D2D1 = 0;
@@ -40,7 +40,7 @@ void MCP3304_Read(unsigned char Channel)
   ((char *)&MCP3304_Data)[0]  =  SPI1_Read (0);
 
 
-  LATC6_Bit  = 1;
+  LATB2_Bit  = 1;
 
 
  if(MCP3304_Data & 0x1000)
