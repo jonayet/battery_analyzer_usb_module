@@ -6,8 +6,8 @@
 
 
 // define IO
-sbit _OP_SIG at LATC2_bit;
-sbit _DR_SIG at TRISC2_bit;
+sbit _OP_SIG at LATA0_bit;
+sbit _DR_SIG at TRISA0_bit;
 
 
 /*** Function Prototypes ***/

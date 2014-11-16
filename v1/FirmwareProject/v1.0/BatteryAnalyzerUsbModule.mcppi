@@ -6,7 +6,7 @@ Value=0
 [BUILD_TYPE]
 Value=0
 [ACTIVE_TAB]
-Value=Library\MCP3304.h
+Value=Main.c
 [USE_EEPROM]
 Value=1
 [USE_HEAP]
@@ -29,11 +29,8 @@ Count=0
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=4
-File0=HardwareProfile.c
-File1=Main.c
-File2=Library\FloatConverter.c
-File3=Library\MCP3304.h
+Count=1
+File0=Main.c
 [EEPROM]
 Count=1
 File0=eeprom_data.ihex
