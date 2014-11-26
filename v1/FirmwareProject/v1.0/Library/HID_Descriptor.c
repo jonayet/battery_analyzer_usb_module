@@ -7,17 +7,17 @@
 
 #include <stdint.h>
 
-const uint8_t _USB_HID_MANUFACTURER_STRING[]  = "Mikroelektronika";
-const uint8_t _USB_HID_PRODUCT_STRING[]       = "HID Custom Demo";
-const uint8_t _USB_HID_SERIALNUMBER_STRING[]  = "0x00000003";
-const uint8_t _USB_HID_CONFIGURATION_STRING[] = "HID Config desc string";
-const uint8_t _USB_HID_INTERFACE_STRING[]     = "HID Interface desc string";
+const uint8_t _USB_HID_MANUFACTURER_STRING[]  = "INFRA Tech";
+const uint8_t _USB_HID_PRODUCT_STRING[]       = "USB Battery Analyzer";
+const uint8_t _USB_HID_SERIALNUMBER_STRING[]  = "ITUBA010001";
+const uint8_t _USB_HID_CONFIGURATION_STRING[] = "";
+const uint8_t _USB_HID_INTERFACE_STRING[]     = "";
 
 // device config
 const uint8_t _USB_VENDOR_ID0 = 0x1F;
 const uint8_t _USB_VENDOR_ID1 = 0xBD;
 const uint8_t _USB_PRODUCT_ID0 = 0x00;
-const uint8_t _USB_PRODUCT_ID1 = 0x03;
+const uint8_t _USB_PRODUCT_ID1 = 0x04;
 const uint8_t _USB_SERVICE_INTERVAL = 1;           // minimum 1ms
 
 // Endpoint max packte size

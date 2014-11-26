@@ -49,13 +49,13 @@ L_main0:
 	GOTO        L_main0
 L_main1:
 ;Main.c,120 :: 		_OP_SIG = 0;
-	BCF         LATC2_bit+0, BitPos(LATC2_bit+0) 
+	BCF         LATA0_bit+0, BitPos(LATA0_bit+0) 
 ;Main.c,121 :: 		_DR_SIG = 0;
-	BCF         TRISC2_bit+0, BitPos(TRISC2_bit+0) 
+	BCF         TRISA0_bit+0, BitPos(TRISA0_bit+0) 
 ;Main.c,125 :: 		while(1)
 L_main2:
 ;Main.c,128 :: 		_OP_SIG = 1;
-	BSF         LATC2_bit+0, BitPos(LATC2_bit+0) 
+	BSF         LATA0_bit+0, BitPos(LATA0_bit+0) 
 ;Main.c,132 :: 		if(dataReceivedFlag)
 	MOVF        _dataReceivedFlag+0, 1 
 	BTFSC       STATUS+0, 2 
@@ -216,7 +216,7 @@ L_main7:
 	MOVF        _MCP3304_Data+1, 0 
 	MOVWF       1395 
 ;Main.c,177 :: 		_OP_SIG = 0;
-	BCF         LATC2_bit+0, BitPos(LATC2_bit+0) 
+	BCF         LATA0_bit+0, BitPos(LATA0_bit+0) 
 ;Main.c,181 :: 		UsbDataSentFlag = 0;
 	CLRF        _UsbDataSentFlag+0 
 ;Main.c,182 :: 		USBDev_SendPacket(1, writebuff, 64);
