@@ -29,8 +29,9 @@ Count=0
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=1
+Count=2
 File0=Main.c
+File1=HardwareProfile.c
 [EEPROM]
 Count=1
 File0=eeprom_data.ihex

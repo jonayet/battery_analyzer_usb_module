@@ -113,12 +113,13 @@ void main()
  unsigned char buffIndex = 0;
  unsigned int lastValue = 0;
  unsigned int AbsValue = 0;
+ unsigned int Counter = 0;
 
 
  ConfigureIO();
  ConfigureModules();
  ConfigureInterrupts();
-#line 96 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
+#line 97 "F:/Projects/Personal/Embedded System/Pearl Enterprise/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
  SPI1_Init_Advanced(_SPI_MASTER_OSC_DIV16, _SPI_DATA_SAMPLE_MIDDLE, _SPI_CLK_IDLE_LOW, _SPI_LOW_2_HIGH);
 
 
@@ -206,7 +207,12 @@ void main()
 
  UsbDataSentFlag = 0;
  USBDev_SendPacket(1, writebuff, 64);
- while(!UsbDataSentFlag) { }
+ Counter = 0;
+ while(!UsbDataSentFlag)
+ {
+ Counter++;
+ if(Counter > 60000){ break; }
+ }
  }
 }
 

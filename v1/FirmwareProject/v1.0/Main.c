@@ -76,6 +76,7 @@ void main()
     unsigned char buffIndex = 0;
     unsigned int lastValue = 0;
     unsigned int AbsValue = 0;
+    unsigned int Counter = 0;
 
     // configure start-up settings
     ConfigureIO();
@@ -180,7 +181,12 @@ void main()
         // send to USB bus
         UsbDataSentFlag = 0;
         USBDev_SendPacket(1, writebuff, 64);
-        while(!UsbDataSentFlag) { }
+        Counter = 0;
+        while(!UsbDataSentFlag)
+        {
+            Counter++;
+            if(Counter > 60000){ break; }
+        }
     }
 }
 

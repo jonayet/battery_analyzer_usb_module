@@ -27,7 +27,7 @@ diagnostics: 0	122	Compilation Started	hardwareprofile.h
 diagnostics: 15	123	Compiled Successfully	Interrupt.c
 diagnostics: 0	122	Compilation Started	hardwareprofile.h
 hint: 74	1163	Variable 'txt' has been declared, but not used	Main.c
-diagnostics: 300	123	Compiled Successfully	Main.c
+diagnostics: 306	123	Compiled Successfully	Main.c
 diagnostics: 0	122	Compilation Started	mcp3304.h
 diagnostics: 41	123	Compiled Successfully	MCP3304.c
 diagnostics: 0	122	Compilation Started	stdint.h
@@ -35,9 +35,9 @@ diagnostics: 146	123	Compiled Successfully	HID_Descriptor.c
 diagnostics: 0	122	Compilation Started	floatconverter.h
 diagnostics: 21	123	Compiled Successfully	FloatConverter.c
 diagnostics: 0	127	All files Compiled in 125 ms	 
-hint: 0	1144	Used RAM (bytes): 915 (45%)  Free RAM (bytes): 1112 (55%)	Used RAM (bytes): 915 (45%)  Free RAM (bytes): 1112 (55%)
-hint: 0	1144	Used ROM (bytes): 9051 (28%)  Free ROM (bytes): 23717 (72%)	Used ROM (bytes): 9051 (28%)  Free ROM (bytes): 23717 (72%)
+hint: 0	1144	Used RAM (bytes): 918 (45%)  Free RAM (bytes): 1109 (55%)	Used RAM (bytes): 918 (45%)  Free RAM (bytes): 1109 (55%)
+hint: 0	1144	Used ROM (bytes): 9085 (28%)  Free ROM (bytes): 23683 (72%)	Used ROM (bytes): 9085 (28%)  Free ROM (bytes): 23683 (72%)
 diagnostics: 0	125	Project Linked Successfully	BatteryAnalyzerUsbModule.mcppi
-diagnostics: 0	128	Linked in 63 ms	 
-diagnostics: 0	129	Project 'BatteryAnalyzerUsbModule.mcppi' completed: 344 ms	 
-diagnostics: 0	103	Finished successfully: 26 Nov 2014, 19:01:02	BatteryAnalyzerUsbModule.mcppi
+diagnostics: 0	128	Linked in 62 ms	 
+diagnostics: 0	129	Project 'BatteryAnalyzerUsbModule.mcppi' completed: 328 ms	 
+diagnostics: 0	103	Finished successfully: 26 Nov 2014, 20:06:43	BatteryAnalyzerUsbModule.mcppi
