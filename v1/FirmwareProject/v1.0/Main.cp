@@ -211,7 +211,7 @@ void main()
  while(!UsbDataSentFlag)
  {
  Counter++;
- if(Counter > 60000){ break; }
+ if(Counter > 1000){ break; }
  }
  }
 }

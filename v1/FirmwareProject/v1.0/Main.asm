@@ -244,13 +244,13 @@ L_main13:
 ;Main.c,187 :: 		Counter++;
 	INFSNZ      main_Counter_L0+0, 1 
 	INCF        main_Counter_L0+1, 1 
-;Main.c,188 :: 		if(Counter > 60000){ break; }
+;Main.c,188 :: 		if(Counter > 1000){ break; }
 	MOVF        main_Counter_L0+1, 0 
-	SUBLW       234
+	SUBLW       3
 	BTFSS       STATUS+0, 2 
 	GOTO        L__main36
 	MOVF        main_Counter_L0+0, 0 
-	SUBLW       96
+	SUBLW       232
 L__main36:
 	BTFSC       STATUS+0, 0 
 	GOTO        L_main15
