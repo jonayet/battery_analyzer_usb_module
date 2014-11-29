@@ -1,19 +1,4 @@
-0	1	mikroCPIC1618.exe -MSF -DBG -pP18F2550 -RA -DL -O11111114 -fo48 -N"F:\Projects\Personal\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\BatteryAnalyzerUsbModule.mcppi" -EH"F:\Projects\Personal\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\eeprom_data.ihex" -SP"C:\Users\jonayet.hossain\Documents\Mikroelektronika\mikroC PRO for PIC\defs\" -SP"C:\Users\jonayet.hossain\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\" -SP"F:\Projects\Personal\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\" -SP"C:\Users\Jonayet\Documents\Mikroelektronika\mikroC PRO for PIC\defs\" -SP"C:\Users\Jonayet\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\" -SP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\" -SP"F:\Projects\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\" -SP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\VoltageCurrentReadingModule\v1\FirmwareProject\v1.0\" -SP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\VoltageCurrentReadingModule\v1\FirmwareProject\v1.0\Library\" -SP"C:\Users\Jonayet\Documents\Mikroelektronika\mikroC PRO for PIC\Packages\USB_Device_PIC\Uses\" -SP"F:\Projects\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library\" -SP"C:\Users\jonayet.hossain\Documents\Mikroelektronika\mikroC PRO for PIC\Packages\USB_Device_PIC\Uses\" -SP"F:\Projects\Personal\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library\" -SP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library\" -IP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\VoltageCurrentReadingModule\v1\FirmwareProject\v1.0\" -IP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\VoltageCurrentReadingModule\v1\FirmwareProject\v1.0\Library\" -IP"F:\Projects\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\" -IP"F:\Projects\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library\" -IP"F:\Projects\Personal\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\" -IP"F:\Projects\Personal\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library\" -IP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\" -IP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library\" "HardwareProfile.c" "Interrupt.c" "Main.c" "MCP3304.c" "HID_Descriptor.c" "FloatConverter.c" "__Lib_Math.mcl" "__Lib_MathDouble.mcl" "__Lib_System.mcl" "__Lib_Delays.mcl" "__Lib_EEPROM_256.mcl" "__Lib_SPI_b10c7.mcl" "__Lib_USB_Device_PIC18F.mcl" "HIDDevice_PIC18F.mcl"	 
-warning: 0	1501	Specified search path does not exist: 'C:\Users\Jonayet\Documents\Mikroelektronika\mikroC PRO for PIC\defs'	 
-warning: 0	1501	Specified search path does not exist: 'C:\Users\Jonayet\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18'	 
-warning: 0	1501	Specified search path does not exist: 'E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0'	 
-warning: 0	1501	Specified search path does not exist: 'F:\Projects\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0'	 
-warning: 0	1501	Specified search path does not exist: 'E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\VoltageCurrentReadingModule\v1\FirmwareProject\v1.0'	 
-warning: 0	1501	Specified search path does not exist: 'E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\VoltageCurrentReadingModule\v1\FirmwareProject\v1.0\Library'	 
-warning: 0	1501	Specified search path does not exist: 'C:\Users\Jonayet\Documents\Mikroelektronika\mikroC PRO for PIC\Packages\USB_Device_PIC\Uses'	 
-warning: 0	1501	Specified search path does not exist: 'F:\Projects\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library'	 
-warning: 0	1501	Specified search path does not exist: 'E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library'	 
-warning: 0	1502	Specified include path does not exist: 'E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\VoltageCurrentReadingModule\v1\FirmwareProject\v1.0'	 
-warning: 0	1502	Specified include path does not exist: 'E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\VoltageCurrentReadingModule\v1\FirmwareProject\v1.0\Library'	 
-warning: 0	1502	Specified include path does not exist: 'F:\Projects\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0'	 
-warning: 0	1502	Specified include path does not exist: 'F:\Projects\Embedded System\Pearl Enterprise\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library'	 
-warning: 0	1502	Specified include path does not exist: 'E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0'	 
-warning: 0	1502	Specified include path does not exist: 'E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library'	 
+0	1	mikroCPIC1618.exe -MSF -DBG -pP18F2550 -RA -DL -O11111114 -fo48 -N"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\BatteryAnalyzerUsbModule.mcppi" -EH"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\eeprom_data.ihex" -SP"C:\Users\Jonayet New\Documents\Mikroelektronika\mikroC PRO for PIC\Defs\" -SP"C:\Users\Jonayet New\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\" -SP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\" -SP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library\" -SP"C:\Users\Jonayet New\Documents\Mikroelektronika\mikroC PRO for PIC\Packages\USB_Device_PIC\Uses\" -IP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\" -IP"E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library\" "HardwareProfile.c" "Interrupt.c" "Main.c" "MCP3304.c" "HID_Descriptor.c" "FloatConverter.c" "UsbHelper.c" "__Lib_Math.mcl" "__Lib_MathDouble.mcl" "__Lib_System.mcl" "__Lib_Delays.mcl" "__Lib_EEPROM_256.mcl" "__Lib_SPI_b10c7.mcl" "__Lib_USB_Device_PIC18F.mcl" "HIDDevice_PIC18F.mcl"	 
 hint: 0	1139	Available RAM: 2027 [bytes], Available ROM: 32768 [bytes]	 
 diagnostics: 0	122	Compilation Started	P18F2550.c
 diagnostics: 1411	123	Compiled Successfully	P18F2550.c
@@ -26,18 +11,21 @@ diagnostics: 31	123	Compiled Successfully	HardwareProfile.c
 diagnostics: 0	122	Compilation Started	hardwareprofile.h
 diagnostics: 15	123	Compiled Successfully	Interrupt.c
 diagnostics: 0	122	Compilation Started	hardwareprofile.h
-hint: 74	1163	Variable 'txt' has been declared, but not used	Main.c
-diagnostics: 306	123	Compiled Successfully	Main.c
+hint: 72	1163	Variable 'txt' has been declared, but not used	Main.c
+diagnostics: 264	123	Compiled Successfully	Main.c
+hint: 77	1164	Variable 'Counter' has been eliminated by optimizer	Main.c
 diagnostics: 0	122	Compilation Started	mcp3304.h
 diagnostics: 41	123	Compiled Successfully	MCP3304.c
 diagnostics: 0	122	Compilation Started	stdint.h
 diagnostics: 146	123	Compiled Successfully	HID_Descriptor.c
 diagnostics: 0	122	Compilation Started	floatconverter.h
 diagnostics: 21	123	Compiled Successfully	FloatConverter.c
-diagnostics: 0	127	All files Compiled in 125 ms	 
-hint: 0	1144	Used RAM (bytes): 918 (45%)  Free RAM (bytes): 1109 (55%)	Used RAM (bytes): 918 (45%)  Free RAM (bytes): 1109 (55%)
-hint: 0	1144	Used ROM (bytes): 9085 (28%)  Free ROM (bytes): 23683 (72%)	Used ROM (bytes): 9085 (28%)  Free ROM (bytes): 23683 (72%)
+diagnostics: 0	122	Compilation Started	stdint.h
+diagnostics: 53	123	Compiled Successfully	UsbHelper.c
+diagnostics: 0	127	All files Compiled in 265 ms	 
+hint: 0	1144	Used RAM (bytes): 919 (45%)  Free RAM (bytes): 1108 (55%)	Used RAM (bytes): 919 (45%)  Free RAM (bytes): 1108 (55%)
+hint: 0	1144	Used ROM (bytes): 9209 (28%)  Free ROM (bytes): 23559 (72%)	Used ROM (bytes): 9209 (28%)  Free ROM (bytes): 23559 (72%)
 diagnostics: 0	125	Project Linked Successfully	BatteryAnalyzerUsbModule.mcppi
-diagnostics: 0	128	Linked in 47 ms	 
-diagnostics: 0	129	Project 'BatteryAnalyzerUsbModule.mcppi' completed: 297 ms	 
-diagnostics: 0	103	Finished successfully: 26 Nov 2014, 20:13:31	BatteryAnalyzerUsbModule.mcppi
+diagnostics: 0	128	Linked in 78 ms	 
+diagnostics: 0	129	Project 'BatteryAnalyzerUsbModule.mcppi' completed: 546 ms	 
+diagnostics: 0	103	Finished successfully: 29 Nov 2014, 14:00:45	BatteryAnalyzerUsbModule.mcppi

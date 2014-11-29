@@ -343,7 +343,6 @@ d0
 d2d1
 data_address
 data_address_bit
-datareceivedflag
 dc
 dc_bit
 dc1b0
@@ -569,6 +568,7 @@ go_done
 go_done_bit
 go_not_done
 go_not_done_bit
+hid_writebuffer
 hlvdcon
 hlvden
 hlvden_bit
@@ -1373,7 +1373,6 @@ usb_hid_cfg_descriptor
 usb_hid_device_descriptor
 usb_hid_langiddesc
 usb_hid_reportdesc
-usbdatasentflag
 usbdev_clearstallendpoint
 usbdev_convertstringtodescriptor
 usbdev_ctrldataack
@@ -1403,6 +1402,9 @@ usbif
 usbif_bit
 usbip
 usbip_bit
+usbnewpacketreceived
+usbpacketsentcomplete
+usbwritetimeoutcounter
 ustat
 uteye
 uteye_bit

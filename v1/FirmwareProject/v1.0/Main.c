@@ -33,7 +33,7 @@
 #include "Library/FloatConverter.h"
 #include "Library/MCP3304.h"
 #include "built_in.h"
-#include <stdint.h>
+#include "UsbHelper.h"
 
 // Lcd pinout settings
 sbit LCD_EN at LATC1_bit;
@@ -54,8 +54,6 @@ sbit LCD_D4_Direction at TRISB2_bit;
 
 unsigned char readbuff[64] absolute 0x500;
 unsigned char writebuff[64] absolute 0x540;
-volatile char dataReceivedFlag = 0;
-volatile char UsbDataSentFlag = 0;
 
 #define CMD_SET_CALIBRATION 0xA3
 unsigned int MCP3304_Data;
@@ -130,14 +128,14 @@ void main()
         ///////////////////////////////////////////////////////
         
         // save and update Constatnts & Offsets if CMD_SET_CALIBRATION found
-        if(dataReceivedFlag)
+        if(UsbNewPacketReceived)
         {
             if(readbuff[0] == CMD_SET_CALIBRATION)
             {
                 SaveConstantsAndOffsets();
                 LoadConstantsAndOffsets();
             }
-            dataReceivedFlag = 0;
+            UsbNewPacketReceived = 0;
         }
         
         // Voltage to buffer
@@ -179,14 +177,7 @@ void main()
         ///////////////////////////////////////////////////////
 
         // send to USB bus
-        UsbDataSentFlag = 0;
-        USBDev_SendPacket(1, writebuff, 64);
-        Counter = 0;
-        while(!UsbDataSentFlag)
-        {
-            Counter++;
-            if(Counter > 1000){ break; }
-        }
+        HID_WriteBuffer();
     }
 }
 
@@ -270,37 +261,4 @@ void LoadConstantsAndOffsets()
     // load Current_Constant
     writebuff[62] = EEPROM_Read(10);                    // Lo(Current_offset)
     writebuff[63] = EEPROM_Read(11);                    // Hi(Current_offset)
-}
-
-// USB Device callback function called for various events
-void USBDev_EventHandler(uint8_t event)
-{
-    switch(event)
-    {
-          // if device is configured (enumeration is successfully finished).
-          case _USB_DEV_EVENT_CONFIGURED:
-          // Set receive buffer where received data is stored
-          USBDev_SetReceiveBuffer(1, readbuff);
-          break;
-    }
-}
-
-// USB Device callback function called when packet received
-void USBDev_DataReceivedHandler(uint8_t ep, uint16_t size)
-{
-    if(ep == 1)
-    {
-        dataReceivedFlag = 1;
-    }
-}
-
-// USB Device callback function called when packet is sent
-void USBDev_DataSentHandler(uint8_t ep)
-{
-    if(ep == 1)
-    {
-        UsbDataSentFlag = 1;
-        // prepare buffer for reception of next packet
-        USBDev_SetReceiveBuffer(1, readbuff);
-    }
 }

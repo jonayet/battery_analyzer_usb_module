@@ -1,5 +1,4 @@
 main
-	__CC2DW
 	ConfigureIO
 	ConfigureModules
 	ConfigureInterrupts
@@ -19,8 +18,9 @@ main
 	MCP3304_Read
 		SPI1_Read
 	Mul_16x16_U
-	USBDev_SendPacket
-		Mul_16x16_U
+	HID_WriteBuffer
+		USBDev_SendPacket
+			Mul_16x16_U
 interrupt_low
 interrupt
 	USBDev_IntHandler
