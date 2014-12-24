@@ -41,7 +41,7 @@ Count=0
 Count=0
 [SEARCH_PATH]
 Count=5
-Path0=C:\Users\Jonayet New\Documents\Mikroelektronika\mikroC PRO for PIC\Defs\
+Path0=C:\Users\Jonayet New\Documents\Mikroelektronika\mikroC PRO for PIC\defs\
 Path1=C:\Users\Jonayet New\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\
 Path2=E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\
 Path3=E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library\
