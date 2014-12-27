@@ -31,7 +31,7 @@ void MCP3304_Read(unsigned char Channel)
  if(Channel & 0x04) { D2D1 |= 0x02; }
 
 
-  SPI1_Read (0b00001000 | D2D1);
+  SPI1_Read (0b00001100 | D2D1);
 
 
   ((char *)&MCP3304_Data)[1]  =  SPI1_Read (D0) & 0x1F;

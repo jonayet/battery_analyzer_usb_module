@@ -40,8 +40,8 @@ L_MCP3304_Read1:
 	GOTO        L_MCP3304_Read2
 	BSF         _D2D1+0, 1 
 L_MCP3304_Read2:
-;MCP3304.c,25 :: 		_SPI_WRITE_READ(0b00001000 | D2D1);
-	MOVLW       8
+;MCP3304.c,25 :: 		_SPI_WRITE_READ(0b00001100 | D2D1);      // 0b00001000
+	MOVLW       12
 	IORWF       _D2D1+0, 0 
 	MOVWF       FARG_SPI1_Read_buffer+0 
 	CALL        _SPI1_Read+0, 0
