@@ -30,9 +30,8 @@ Count=0
 Count=0
 ActiveImageIndex=-1
 [OPENED_FILES]
-Count=2
+Count=1
 File0=Main.c
-File1=Library\MCP3304.c
 [EEPROM]
 Count=1
 File0=eeprom_data.ihex
@@ -41,12 +40,15 @@ Count=0
 [OTHER_FILES]
 Count=0
 [SEARCH_PATH]
-Count=5
-Path0=C:\Users\Jonayet New\Documents\Mikroelektronika\mikroC PRO for PIC\defs\
-Path1=C:\Users\Jonayet New\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\
+Count=8
+Path0=C:\Users\Jonayet\Documents\Mikroelektronika\mikroC PRO for PIC\defs\
+Path1=C:\Users\Jonayet\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\
 Path2=E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\
-Path3=E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library\
-Path4=C:\Users\Jonayet New\Documents\Mikroelektronika\mikroC PRO for PIC\Packages\USB_Device_PIC\Uses\
+Path3=C:\Users\Jonayet New\Documents\Mikroelektronika\mikroC PRO for PIC\defs\
+Path4=C:\Users\Jonayet New\Documents\Mikroelektronika\mikroC PRO for PIC\uses\P18\
+Path5=E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\Library\
+Path6=C:\Users\Jonayet New\Documents\Mikroelektronika\mikroC PRO for PIC\Packages\USB_Device_PIC\Uses\
+Path7=C:\Users\Jonayet\Documents\Mikroelektronika\mikroC PRO for PIC\Packages\USB_Device_PIC\Uses\
 [HEADER_PATH]
 Count=2
 Path0=E:\Workplace\Projects\Embedded\PearlEnterprise\EngineAnalyzer\battery_analyzer_usb_module\v1\FirmwareProject\v1.0\

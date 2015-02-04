@@ -676,6 +676,8 @@ irvst_bit
 ivrst
 ivrst_bit
 last_data
+lastcurrentvalue
+lastvoltagevalue
 lata
 lata0
 lata0_bit

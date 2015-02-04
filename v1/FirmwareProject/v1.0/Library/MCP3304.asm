@@ -29,19 +29,18 @@ _MCP3304_Read:
 	MOVLW       128
 	MOVWF       _D0+0 
 L_MCP3304_Read0:
-;MCP3304.c,21 :: 		if(Channel & 0x02) { D2D1 = 0x01; }
+;MCP3304.c,21 :: 		if(Channel & 0x02) { D2D1 |= 0x01; }
 	BTFSS       FARG_MCP3304_Read_Channel+0, 1 
 	GOTO        L_MCP3304_Read1
-	MOVLW       1
-	MOVWF       _D2D1+0 
+	BSF         _D2D1+0, 0 
 L_MCP3304_Read1:
 ;MCP3304.c,22 :: 		if(Channel & 0x04) { D2D1 |= 0x02; }
 	BTFSS       FARG_MCP3304_Read_Channel+0, 2 
 	GOTO        L_MCP3304_Read2
 	BSF         _D2D1+0, 1 
 L_MCP3304_Read2:
-;MCP3304.c,25 :: 		_SPI_WRITE_READ(0b00001100 | D2D1);      // 0b00001000
-	MOVLW       12
+;MCP3304.c,25 :: 		_SPI_WRITE_READ(0b00001000 | D2D1);      // 0b00001000
+	MOVLW       8
 	IORWF       _D2D1+0, 0 
 	MOVWF       FARG_SPI1_Read_buffer+0 
 	CALL        _SPI1_Read+0, 0

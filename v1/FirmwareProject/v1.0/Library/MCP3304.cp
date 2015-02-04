@@ -8,7 +8,7 @@ extern unsigned int MCP3304_Data;
 
 void MCP3304_Init();
 void MCP3304_Read(unsigned char Channel);
-#line 1 "c:/users/jonayet new/documents/mikroelektronika/mikroc pro for pic/include/built_in.h"
+#line 1 "c:/users/jonayet/documents/mikroelektronika/mikroc pro for pic/include/built_in.h"
 #line 4 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Library/MCP3304.c"
 void MCP3304_Init()
 {
@@ -27,11 +27,11 @@ void MCP3304_Read(unsigned char Channel)
  D0 = 0;
  D2D1 = 0;
  if(Channel & 0x01) { D0 = 0x80; }
- if(Channel & 0x02) { D2D1 = 0x01; }
+ if(Channel & 0x02) { D2D1 |= 0x01; }
  if(Channel & 0x04) { D2D1 |= 0x02; }
 
 
-  SPI1_Read (0b00001100 | D2D1);
+  SPI1_Read (0b00001000 | D2D1);
 
 
   ((char *)&MCP3304_Data)[1]  =  SPI1_Read (D0) & 0x1F;

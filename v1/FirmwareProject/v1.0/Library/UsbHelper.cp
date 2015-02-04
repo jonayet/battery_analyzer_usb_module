@@ -1,6 +1,6 @@
 #line 1 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Library/UsbHelper.c"
 #line 1 "e:/workplace/projects/embedded/pearlenterprise/engineanalyzer/battery_analyzer_usb_module/v1/firmwareproject/v1.0/library/usbhelper.h"
-#line 1 "c:/users/jonayet new/documents/mikroelektronika/mikroc pro for pic/include/stdint.h"
+#line 1 "c:/users/jonayet/documents/mikroelektronika/mikroc pro for pic/include/stdint.h"
 
 
 
@@ -53,7 +53,7 @@ extern uint8_t UsbNewPacketReceived;
 extern uint8_t UsbPacketSentComplete;
 
 uint8_t HID_WriteBuffer();
-#line 1 "c:/users/jonayet new/documents/mikroelektronika/mikroc pro for pic/include/stdint.h"
+#line 1 "c:/users/jonayet/documents/mikroelektronika/mikroc pro for pic/include/stdint.h"
 #line 4 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Library/UsbHelper.c"
 volatile uint8_t UsbNewPacketReceived = 0;
 volatile uint8_t UsbPacketSentComplete = 0;

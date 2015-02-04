@@ -1,4 +1,5 @@
 main
+	__CC2DW
 	ConfigureIO
 	ConfigureModules
 	ConfigureInterrupts

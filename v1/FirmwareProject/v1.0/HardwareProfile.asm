@@ -4,7 +4,7 @@ _ConfigureIO:
 ;HardwareProfile.c,6 :: 		void ConfigureIO()
 ;HardwareProfile.c,9 :: 		PORTA = 0;
 	CLRF        PORTA+0 
-;HardwareProfile.c,10 :: 		PORtB = 0;
+;HardwareProfile.c,10 :: 		PORTB = 0;
 	CLRF        PORTB+0 
 ;HardwareProfile.c,11 :: 		PORTC = 0;
 	CLRF        PORTC+0 

@@ -18,11 +18,11 @@ void MCP3304_Read(unsigned char Channel)
     D0 = 0;
     D2D1 = 0;
     if(Channel & 0x01) { D0 = 0x80; }
-    if(Channel & 0x02) { D2D1 = 0x01; }
+    if(Channel & 0x02) { D2D1 |= 0x01; }
     if(Channel & 0x04) { D2D1 |= 0x02; }
   
     // send first byte (Start Bit + SGL_nDIFF + D2 + D1), nothing to read
-    _SPI_WRITE_READ(0b00001100 | D2D1);      // 0b00001000
+    _SPI_WRITE_READ(0b00001000 | D2D1);      // 0b00001000
     
     // send second byte(D0), read data
     Hi(MCP3304_Data) = _SPI_WRITE_READ(D0) & 0x1F;

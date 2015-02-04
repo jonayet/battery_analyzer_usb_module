@@ -64,6 +64,8 @@ int Current_offset;
 
 void SaveConstantsAndOffsets();
 void LoadConstantsAndOffsets();
+unsigned int lastVoltageValue = 0;
+unsigned int lastCurrentValue = 0;
 
 
 /*** Main function of the project ***/
@@ -72,7 +74,6 @@ void main()
     char txt[10];
     unsigned char i = 0;
     unsigned char buffIndex = 0;
-    unsigned int lastValue = 0;
     unsigned int AbsValue = 0;
     unsigned int Counter = 0;
 
@@ -109,6 +110,9 @@ void main()
     // config MCP3304
     MCP3304_Init();
     
+    // clear buff
+    for(i = 0; i < 64; i++) { readbuff[1] = 0; writebuff[i] = 0; }
+    
     // load Constants & Offsets of Voltage & Current from EEPROM
     LoadConstantsAndOffsets();
     
@@ -140,7 +144,7 @@ void main()
         
         // Voltage to buffer
         buffIndex = 0;
-        for(i = 0; i < 25; i++)
+        for(i = 0; i < 12; i++)
         {
             // Voltage
             MCP3304_Read(0);
@@ -149,28 +153,52 @@ void main()
             if(MCP3304_Data & 0x8000)
             {
                 AbsValue =  MCP3304_Data * -1;
-                MCP3304_Data = (AbsValue + lastValue) / 2;
+                MCP3304_Data = (AbsValue + lastVoltageValue) / 2;
                 MCP3304_Data *= -1;
                 Delay_us(5);
             }
             else
             {
                 AbsValue =  MCP3304_Data;
-                MCP3304_Data = (AbsValue + lastValue) / 2;
+                MCP3304_Data = (AbsValue + lastVoltageValue) / 2;
                 Delay_us(15);
             }
-            lastValue = AbsValue;
+            lastVoltageValue = AbsValue;
             /********************************/
             
             writebuff[buffIndex] = Lo(MCP3304_Data);
             writebuff[buffIndex + 1] = Hi(MCP3304_Data);
             buffIndex += 2;
         }
+        
+        // Current to buffer
+        buffIndex = 24;
+        for(i = 0; i < 12; i++)
+        {
+            // Current
+            MCP3304_Read(2);
 
-        // Current
-        MCP3304_Read(2);
-        writebuff[50] = Lo(MCP3304_Data);
-        writebuff[51] = Hi(MCP3304_Data);
+            /******** for smooth curve *******/
+            if(MCP3304_Data & 0x8000)
+            {
+                AbsValue =  MCP3304_Data * -1;
+                MCP3304_Data = (AbsValue + lastCurrentValue) / 2;
+                MCP3304_Data *= -1;
+                Delay_us(5);
+            }
+            else
+            {
+                AbsValue =  MCP3304_Data;
+                MCP3304_Data = (AbsValue + lastCurrentValue) / 2;
+                Delay_us(15);
+            }
+            lastCurrentValue = AbsValue;
+            /********************************/
+
+            writebuff[buffIndex] = Lo(MCP3304_Data);
+            writebuff[buffIndex + 1] = Hi(MCP3304_Data);
+            buffIndex += 2;
+        }
         
         ///////////////////// DEBUG - 1ms loop ////////////////
         _OP_SIG = 0;
@@ -248,7 +276,7 @@ void LoadConstantsAndOffsets()
     writebuff[54] = EEPROM_Read(2);                     // Higher(Voltage_Constant)
     writebuff[55] = EEPROM_Read(3);                     // Highest(Voltage_Constant)
 
-    // load Voltage_Constant
+    // load Voltage_offset
     writebuff[56] = EEPROM_Read(4);                     // Lo(Voltage_offset)
     writebuff[57] = EEPROM_Read(5);                     // Hi(Voltage_offset)
 
@@ -258,7 +286,7 @@ void LoadConstantsAndOffsets()
     writebuff[60] = EEPROM_Read(8);                     // Higher(Current_Constant)
     writebuff[61] = EEPROM_Read(9);                     // Highest(Current_Constant)
 
-    // load Current_Constant
+    // load Current_offset
     writebuff[62] = EEPROM_Read(10);                    // Lo(Current_offset)
     writebuff[63] = EEPROM_Read(11);                    // Hi(Current_offset)
 }

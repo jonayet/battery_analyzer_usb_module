@@ -29,9 +29,9 @@ extern unsigned int MCP3304_Data;
 
 void MCP3304_Init();
 void MCP3304_Read(unsigned char Channel);
-#line 1 "c:/users/jonayet new/documents/mikroelektronika/mikroc pro for pic/include/built_in.h"
+#line 1 "c:/users/jonayet/documents/mikroelektronika/mikroc pro for pic/include/built_in.h"
 #line 1 "e:/workplace/projects/embedded/pearlenterprise/engineanalyzer/battery_analyzer_usb_module/v1/firmwareproject/v1.0/library/usbhelper.h"
-#line 1 "c:/users/jonayet new/documents/mikroelektronika/mikroc pro for pic/include/stdint.h"
+#line 1 "c:/users/jonayet/documents/mikroelektronika/mikroc pro for pic/include/stdint.h"
 
 
 
@@ -113,6 +113,8 @@ int Current_offset;
 
 void SaveConstantsAndOffsets();
 void LoadConstantsAndOffsets();
+unsigned int lastVoltageValue = 0;
+unsigned int lastCurrentValue = 0;
 
 
 
@@ -121,7 +123,6 @@ void main()
  char txt[10];
  unsigned char i = 0;
  unsigned char buffIndex = 0;
- unsigned int lastValue = 0;
  unsigned int AbsValue = 0;
  unsigned int Counter = 0;
 
@@ -129,7 +130,7 @@ void main()
  ConfigureIO();
  ConfigureModules();
  ConfigureInterrupts();
-#line 95 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
+#line 96 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
  SPI1_Init_Advanced(_SPI_MASTER_OSC_DIV16, _SPI_DATA_SAMPLE_MIDDLE, _SPI_CLK_IDLE_LOW, _SPI_LOW_2_HIGH);
 
 
@@ -146,6 +147,9 @@ void main()
 
 
  MCP3304_Init();
+
+
+ for(i = 0; i < 64; i++) { readbuff[1] = 0; writebuff[i] = 0; }
 
 
  LoadConstantsAndOffsets();
@@ -178,7 +182,7 @@ void main()
 
 
  buffIndex = 0;
- for(i = 0; i < 25; i++)
+ for(i = 0; i < 12; i++)
  {
 
  MCP3304_Read(0);
@@ -187,17 +191,17 @@ void main()
  if(MCP3304_Data & 0x8000)
  {
  AbsValue = MCP3304_Data * -1;
- MCP3304_Data = (AbsValue + lastValue) / 2;
+ MCP3304_Data = (AbsValue + lastVoltageValue) / 2;
  MCP3304_Data *= -1;
  Delay_us(5);
  }
  else
  {
  AbsValue = MCP3304_Data;
- MCP3304_Data = (AbsValue + lastValue) / 2;
+ MCP3304_Data = (AbsValue + lastVoltageValue) / 2;
  Delay_us(15);
  }
- lastValue = AbsValue;
+ lastVoltageValue = AbsValue;
 
 
  writebuff[buffIndex] =  ((char *)&MCP3304_Data)[0] ;
@@ -206,9 +210,33 @@ void main()
  }
 
 
+ buffIndex = 24;
+ for(i = 0; i < 12; i++)
+ {
+
  MCP3304_Read(2);
- writebuff[50] =  ((char *)&MCP3304_Data)[0] ;
- writebuff[51] =  ((char *)&MCP3304_Data)[1] ;
+
+
+ if(MCP3304_Data & 0x8000)
+ {
+ AbsValue = MCP3304_Data * -1;
+ MCP3304_Data = (AbsValue + lastCurrentValue) / 2;
+ MCP3304_Data *= -1;
+ Delay_us(5);
+ }
+ else
+ {
+ AbsValue = MCP3304_Data;
+ MCP3304_Data = (AbsValue + lastCurrentValue) / 2;
+ Delay_us(15);
+ }
+ lastCurrentValue = AbsValue;
+
+
+ writebuff[buffIndex] =  ((char *)&MCP3304_Data)[0] ;
+ writebuff[buffIndex + 1] =  ((char *)&MCP3304_Data)[1] ;
+ buffIndex += 2;
+ }
 
 
  _OP_SIG = 0;

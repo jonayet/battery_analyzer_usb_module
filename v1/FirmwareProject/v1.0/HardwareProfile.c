@@ -7,7 +7,7 @@ void ConfigureIO()
 {
         // clear all port data
         PORTA = 0;
-        PORtB = 0;
+        PORTB = 0;
         PORTC = 0;
 }
 
