@@ -105,16 +105,21 @@ unsigned char readbuff[64] absolute 0x500;
 unsigned char writebuff[64] absolute 0x540;
 
 
-unsigned int MCP3304_Data;
-float Voltage_Constant;
-int Voltage_offset;
-float Current_Constant;
-int Current_offset;
 
-void SaveConstantsAndOffsets();
-void LoadConstantsAndOffsets();
-unsigned int lastVoltageValue = 0;
-unsigned int lastCurrentValue = 0;
+
+
+
+
+
+
+
+unsigned int MCP3304_Data;
+
+void SaveNonVolatileConstants(unsigned char musk);
+void LoadNonVolatileConstants();
+
+unsigned int lastChannel1Value = 0;
+unsigned int lastChannel2Value = 0;
 
 
 
@@ -122,6 +127,7 @@ void main()
 {
  char txt[10];
  unsigned char i = 0;
+ unsigned char nvConstantMusk = 0;
  unsigned char buffIndex = 0;
  unsigned int AbsValue = 0;
  unsigned int Counter = 0;
@@ -130,7 +136,7 @@ void main()
  ConfigureIO();
  ConfigureModules();
  ConfigureInterrupts();
-#line 96 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
+#line 102 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
  SPI1_Init_Advanced(_SPI_MASTER_OSC_DIV16, _SPI_DATA_SAMPLE_MIDDLE, _SPI_CLK_IDLE_LOW, _SPI_LOW_2_HIGH);
 
 
@@ -149,10 +155,10 @@ void main()
  MCP3304_Init();
 
 
- for(i = 0; i < 64; i++) { readbuff[1] = 0; writebuff[i] = 0; }
+ for(i = 0; i < 64; i++) { readbuff[i] = 0; writebuff[i] = 0; }
 
 
- LoadConstantsAndOffsets();
+ LoadNonVolatileConstants();
 
 
  while(USBDev_GetDeviceState() != _USB_DEV_STATE_CONFIGURED) { }
@@ -172,16 +178,17 @@ void main()
 
  if(UsbNewPacketReceived)
  {
- if(readbuff[0] ==  0xA3 )
+ if(readbuff[ 0 ] ==  0xA3 )
  {
- SaveConstantsAndOffsets();
- LoadConstantsAndOffsets();
+ nvConstantMusk = readbuff[ 1 ];
+ SaveNonVolatileConstants(nvConstantMusk);
+ LoadNonVolatileConstants();
  }
  UsbNewPacketReceived = 0;
  }
 
 
- buffIndex = 0;
+ buffIndex =  0 ;
  for(i = 0; i < 12; i++)
  {
 
@@ -191,17 +198,17 @@ void main()
  if(MCP3304_Data & 0x8000)
  {
  AbsValue = MCP3304_Data * -1;
- MCP3304_Data = (AbsValue + lastVoltageValue) / 2;
+ MCP3304_Data = (AbsValue + lastChannel1Value) / 2;
  MCP3304_Data *= -1;
  Delay_us(5);
  }
  else
  {
  AbsValue = MCP3304_Data;
- MCP3304_Data = (AbsValue + lastVoltageValue) / 2;
+ MCP3304_Data = (AbsValue + lastChannel1Value) / 2;
  Delay_us(15);
  }
- lastVoltageValue = AbsValue;
+ lastChannel1Value = AbsValue;
 
 
  writebuff[buffIndex] =  ((char *)&MCP3304_Data)[0] ;
@@ -210,7 +217,7 @@ void main()
  }
 
 
- buffIndex = 24;
+ buffIndex =  24 ;
  for(i = 0; i < 12; i++)
  {
 
@@ -220,17 +227,17 @@ void main()
  if(MCP3304_Data & 0x8000)
  {
  AbsValue = MCP3304_Data * -1;
- MCP3304_Data = (AbsValue + lastCurrentValue) / 2;
+ MCP3304_Data = (AbsValue + lastChannel2Value) / 2;
  MCP3304_Data *= -1;
  Delay_us(5);
  }
  else
  {
  AbsValue = MCP3304_Data;
- MCP3304_Data = (AbsValue + lastCurrentValue) / 2;
+ MCP3304_Data = (AbsValue + lastChannel2Value) / 2;
  Delay_us(15);
  }
- lastCurrentValue = AbsValue;
+ lastChannel2Value = AbsValue;
 
 
  writebuff[buffIndex] =  ((char *)&MCP3304_Data)[0] ;
@@ -247,84 +254,82 @@ void main()
  }
 }
 
-
-void SaveConstantsAndOffsets()
+void SaveNonVolatileConstants(unsigned char musk)
 {
-
-  ((char *)&Voltage_Constant)[0]  = readbuff[1];
-  ((char *)&Voltage_Constant)[1]  = readbuff[2];
-  ((char *)&Voltage_Constant)[2]  = readbuff[3];
-  ((char *)&Voltage_Constant)[3]  = readbuff[4];
- ConvertIEEE754FloatToMicrochip(&Voltage_Constant);
+ unsigned char i;
 
 
- if(Voltage_Constant != 0)
+ if(musk & 0x01)
  {
-
- EEPROM_Write(0, readbuff[1]);
+ for(i = 0; i < 4; i++)
+ {
+ EEPROM_Write( 0  + i, readbuff[ 2  + i]);
  Delay_ms(5);
- EEPROM_Write(1, readbuff[2]);
- Delay_ms(5);
- EEPROM_Write(2, readbuff[3]);
- Delay_ms(5);
- EEPROM_Write(3, readbuff[4]);
- Delay_ms(5);
-
-
- EEPROM_Write(4, readbuff[5]);
- Delay_ms(5);
- EEPROM_Write(5, readbuff[6]);
- Delay_ms(5);
+ }
  }
 
 
-  ((char *)&Current_Constant)[0]  = readbuff[7];
-  ((char *)&Current_Constant)[1]  = readbuff[8];
-  ((char *)&Current_Constant)[2]  = readbuff[9];
-  ((char *)&Current_Constant)[3]  = readbuff[10];
- ConvertIEEE754FloatToMicrochip(&Current_Constant);
-
-
- if(Current_Constant != 0)
+ if(musk & 0x02)
  {
-
- EEPROM_Write(6, readbuff[7]);
- Delay_ms(5);
- EEPROM_Write(7, readbuff[8]);
- Delay_ms(5);
- EEPROM_Write(8, readbuff[9]);
- Delay_ms(5);
- EEPROM_Write(9, readbuff[10]);
- Delay_ms(5);
-
-
- EEPROM_Write(10, readbuff[11]);
- Delay_ms(5);
- EEPROM_Write(11, readbuff[12]);
+ for(i = 4; i < 8; i++)
+ {
+ EEPROM_Write( 0  + i, readbuff[ 2  + i]);
  Delay_ms(5);
  }
+ }
+
+
+ if(musk & 0x04)
+ {
+ for(i = 8; i < 12; i++)
+ {
+ EEPROM_Write( 0  + i, readbuff[ 2  + i]);
+ Delay_ms(5);
+ }
+ }
+
+
+ if(musk & 0x08)
+ {
+ for(i = 12; i < 16; i++)
+ {
+ EEPROM_Write( 0  + i, readbuff[ 2  + i]);
+ Delay_ms(5);
+ }
+ }
+#line 270 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
 }
 
-
-void LoadConstantsAndOffsets()
+void LoadNonVolatileConstants()
 {
-
- writebuff[52] = EEPROM_Read(0);
- writebuff[53] = EEPROM_Read(1);
- writebuff[54] = EEPROM_Read(2);
- writebuff[55] = EEPROM_Read(3);
+ unsigned char i;
 
 
- writebuff[56] = EEPROM_Read(4);
- writebuff[57] = EEPROM_Read(5);
+ for(i = 0; i < 4; i++)
+ {
+ writebuff[ 48  + i] = EEPROM_Read( 0  + i);
+ Delay_ms(5);
+ }
 
 
- writebuff[58] = EEPROM_Read(6);
- writebuff[59] = EEPROM_Read(7);
- writebuff[60] = EEPROM_Read(8);
- writebuff[61] = EEPROM_Read(9);
+ for(i = 4; i < 8; i++)
+ {
+ writebuff[ 48  + i] = EEPROM_Read( 0  + i);
+ Delay_ms(5);
+ }
 
 
- writebuff[62] = EEPROM_Read(10);
- writebuff[63] = EEPROM_Read(11);
+ for(i = 8; i < 12; i++)
+ {
+ writebuff[ 48  + i] = EEPROM_Read( 0  + i);
+ Delay_ms(5);
+ }
+
+
+ for(i = 12; i < 16; i++)
+ {
+ writebuff[ 48  + i] = EEPROM_Read( 0  + i);
+ Delay_ms(5);
+ }
+#line 310 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
 }

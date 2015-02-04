@@ -9,12 +9,10 @@ main
 		USBDev_DisableAllEp
 		USBDev_InitBDandPipes
 	MCP3304_Init
-	LoadConstantsAndOffsets
+	LoadNonVolatileConstants
 		EEPROM_Read
 	USBDev_GetDeviceState
-	SaveConstantsAndOffsets
-		ConvertIEEE754FloatToMicrochip
-		Equals_Double
+	SaveNonVolatileConstants
 		EEPROM_Write
 	MCP3304_Read
 		SPI1_Read

@@ -55,17 +55,22 @@ sbit LCD_D4_Direction at TRISB2_bit;
 unsigned char readbuff[64] absolute 0x500;
 unsigned char writebuff[64] absolute 0x540;
 
-#define CMD_SET_CALIBRATION 0xA3
-unsigned int MCP3304_Data;
-float Voltage_Constant;
-int Voltage_offset;
-float Current_Constant;
-int Current_offset;
+#define CMD_SET_NV_CONSTANT 0xA3
+#define NV_CONST_CMD_ADDRESS 0
+#define NV_CONST_MUSK_ADDRESS 1
+#define NV_CONST_READ_DATA_ADDRESS 2
+#define NV_CONST_WRITE_DATA_ADDRESS 48
+#define NV_CONST_EEPROM_ADDRESS 0
+#define ANALOG_CH1_ADDRESS 0
+#define ANALOG_CH2_ADDRESS 24
 
-void SaveConstantsAndOffsets();
-void LoadConstantsAndOffsets();
-unsigned int lastVoltageValue = 0;
-unsigned int lastCurrentValue = 0;
+unsigned int MCP3304_Data;
+
+void SaveNonVolatileConstants(unsigned char musk);
+void LoadNonVolatileConstants();
+
+unsigned int lastChannel1Value = 0;
+unsigned int lastChannel2Value = 0;
 
 
 /*** Main function of the project ***/
@@ -73,6 +78,7 @@ void main()
 {
     char txt[10];
     unsigned char i = 0;
+    unsigned char nvConstantMusk = 0;
     unsigned char buffIndex = 0;
     unsigned int AbsValue = 0;
     unsigned int Counter = 0;
@@ -111,10 +117,10 @@ void main()
     MCP3304_Init();
     
     // clear buff
-    for(i = 0; i < 64; i++) { readbuff[1] = 0; writebuff[i] = 0; }
+    for(i = 0; i < 64; i++) { readbuff[i] = 0; writebuff[i] = 0; }
     
-    // load Constants & Offsets of Voltage & Current from EEPROM
-    LoadConstantsAndOffsets();
+    // load Non Volatile Constants from EEPROM
+    LoadNonVolatileConstants();
     
     // Wait until device is configured (enumeration is successfully finished)
     while(USBDev_GetDeviceState() != _USB_DEV_STATE_CONFIGURED) { }
@@ -134,36 +140,37 @@ void main()
         // save and update Constatnts & Offsets if CMD_SET_CALIBRATION found
         if(UsbNewPacketReceived)
         {
-            if(readbuff[0] == CMD_SET_CALIBRATION)
+            if(readbuff[NV_CONST_CMD_ADDRESS] == CMD_SET_NV_CONSTANT)
             {
-                SaveConstantsAndOffsets();
-                LoadConstantsAndOffsets();
+                nvConstantMusk = readbuff[NV_CONST_MUSK_ADDRESS];
+                SaveNonVolatileConstants(nvConstantMusk);
+                LoadNonVolatileConstants();
             }
             UsbNewPacketReceived = 0;
         }
         
-        // Voltage to buffer
-        buffIndex = 0;
+        // Channel 1 to buffer
+        buffIndex = ANALOG_CH1_ADDRESS;
         for(i = 0; i < 12; i++)
         {
-            // Voltage
+            // Channel 1
             MCP3304_Read(0);
             
             /******** for smooth curve *******/
             if(MCP3304_Data & 0x8000)
             {
                 AbsValue =  MCP3304_Data * -1;
-                MCP3304_Data = (AbsValue + lastVoltageValue) / 2;
+                MCP3304_Data = (AbsValue + lastChannel1Value) / 2;
                 MCP3304_Data *= -1;
                 Delay_us(5);
             }
             else
             {
                 AbsValue =  MCP3304_Data;
-                MCP3304_Data = (AbsValue + lastVoltageValue) / 2;
+                MCP3304_Data = (AbsValue + lastChannel1Value) / 2;
                 Delay_us(15);
             }
-            lastVoltageValue = AbsValue;
+            lastChannel1Value = AbsValue;
             /********************************/
             
             writebuff[buffIndex] = Lo(MCP3304_Data);
@@ -171,28 +178,28 @@ void main()
             buffIndex += 2;
         }
         
-        // Current to buffer
-        buffIndex = 24;
+        // Channel 2 to buffer
+        buffIndex = ANALOG_CH2_ADDRESS;
         for(i = 0; i < 12; i++)
         {
-            // Current
+            // Channel 2
             MCP3304_Read(2);
 
             /******** for smooth curve *******/
             if(MCP3304_Data & 0x8000)
             {
                 AbsValue =  MCP3304_Data * -1;
-                MCP3304_Data = (AbsValue + lastCurrentValue) / 2;
+                MCP3304_Data = (AbsValue + lastChannel2Value) / 2;
                 MCP3304_Data *= -1;
                 Delay_us(5);
             }
             else
             {
                 AbsValue =  MCP3304_Data;
-                MCP3304_Data = (AbsValue + lastCurrentValue) / 2;
+                MCP3304_Data = (AbsValue + lastChannel2Value) / 2;
                 Delay_us(15);
             }
-            lastCurrentValue = AbsValue;
+            lastChannel2Value = AbsValue;
             /********************************/
 
             writebuff[buffIndex] = Lo(MCP3304_Data);
@@ -209,84 +216,95 @@ void main()
     }
 }
 
-
-void SaveConstantsAndOffsets()
+void SaveNonVolatileConstants(unsigned char musk)
 {
-    // get Voltage_Constant from usb data
-    Lo(Voltage_Constant) = readbuff[1];
-    Hi(Voltage_Constant) = readbuff[2];
-    Higher(Voltage_Constant) = readbuff[3];
-    Highest(Voltage_Constant) = readbuff[4];
-    ConvertIEEE754FloatToMicrochip(&Voltage_Constant);
+    unsigned char i;
     
-    // Voltage_Constant = 0?, dont save Voltage calibration
-    if(Voltage_Constant != 0)
+    // save nvConstant1 ?
+    if(musk & 0x01)
     {
-        // save Voltage_Constant
-        EEPROM_Write(0, readbuff[1]);                     // Lo(Voltage_Constant)
-        Delay_ms(5);
-        EEPROM_Write(1, readbuff[2]);                     // Hi(Voltage_Constant)
-        Delay_ms(5);
-        EEPROM_Write(2, readbuff[3]);                     // Higher(Voltage_Constant)
-        Delay_ms(5);
-        EEPROM_Write(3, readbuff[4]);                     // Highest(Voltage_Constant)
-        Delay_ms(5);
-
-        // save Voltage_offset
-        EEPROM_Write(4, readbuff[5]);                     // Lo(Voltage_offset)
-        Delay_ms(5);
-        EEPROM_Write(5, readbuff[6]);                     // Hi(Voltage_offset)
-        Delay_ms(5);
+        for(i = 0; i < 4; i++)
+        {
+            EEPROM_Write(NV_CONST_EEPROM_ADDRESS + i, readbuff[NV_CONST_READ_DATA_ADDRESS + i]);
+            Delay_ms(5);
+        }
     }
-
-    // get Current_Constant from usb data
-    Lo(Current_Constant) = readbuff[7];
-    Hi(Current_Constant) = readbuff[8];
-    Higher(Current_Constant) = readbuff[9];
-    Highest(Current_Constant) = readbuff[10];
-    ConvertIEEE754FloatToMicrochip(&Current_Constant);
-
-    // Current_Constant = 0?, dont save Current calibration
-    if(Current_Constant != 0)
+    
+    // save nvConstant2 ?
+    if(musk & 0x02)
     {
-        // save Current_Constant
-        EEPROM_Write(6, readbuff[7]);                     // Lo(Current_Constant)
-        Delay_ms(5);
-        EEPROM_Write(7, readbuff[8]);                     // Hi(Current_Constant)
-        Delay_ms(5);
-        EEPROM_Write(8, readbuff[9]);                     // Higher(Current_Constant)
-        Delay_ms(5);
-        EEPROM_Write(9, readbuff[10]);                    // Highest(Current_Constant)
-        Delay_ms(5);
-
-        // save Current_Constant
-        EEPROM_Write(10, readbuff[11]);                   // Lo(Current_offset)
-        Delay_ms(5);
-        EEPROM_Write(11, readbuff[12]);                   // Hi(Current_offset)
-        Delay_ms(5);
+        for(i = 4; i < 8; i++)
+        {
+            EEPROM_Write(NV_CONST_EEPROM_ADDRESS + i, readbuff[NV_CONST_READ_DATA_ADDRESS + i]);
+            Delay_ms(5);
+        }
     }
+    
+    // save nvConstant3 ?
+    if(musk & 0x04)
+    {
+        for(i = 8; i < 12; i++)
+        {
+            EEPROM_Write(NV_CONST_EEPROM_ADDRESS + i, readbuff[NV_CONST_READ_DATA_ADDRESS + i]);
+            Delay_ms(5);
+        }
+    }
+    
+    // save nvConstant4 ?
+    if(musk & 0x08)
+    {
+        for(i = 12; i < 16; i++)
+        {
+            EEPROM_Write(NV_CONST_EEPROM_ADDRESS + i, readbuff[NV_CONST_READ_DATA_ADDRESS + i]);
+            Delay_ms(5);
+        }
+    }
+    
+    /*
+    Lo(nvConstant1) = readbuff[NV_CONST_READ_DATA_ADDRESS];
+    Hi(nvConstant1) = readbuff[NV_CONST_READ_DATA_ADDRESS + 1];
+    Higher(nvConstant1) = readbuff[NV_CONST_READ_DATA_ADDRESS + 2];
+    Highest(nvConstant1) = readbuff[NV_CONST_READ_DATA_ADDRESS + 3];
+    ConvertIEEE754FloatToMicrochip(&nvConstant1);
+    */
 }
 
-
-void LoadConstantsAndOffsets()
+void LoadNonVolatileConstants()
 {
-    // load Voltage_Constant
-    writebuff[52] = EEPROM_Read(0);                     // Lo(Voltage_Constant)
-    writebuff[53] = EEPROM_Read(1);                     // Hi(Voltage_Constant)
-    writebuff[54] = EEPROM_Read(2);                     // Higher(Voltage_Constant)
-    writebuff[55] = EEPROM_Read(3);                     // Highest(Voltage_Constant)
+    unsigned char i;
 
-    // load Voltage_offset
-    writebuff[56] = EEPROM_Read(4);                     // Lo(Voltage_offset)
-    writebuff[57] = EEPROM_Read(5);                     // Hi(Voltage_offset)
-
-    // load Current_Constant
-    writebuff[58] = EEPROM_Read(6);                     // Lo(Current_Constant)
-    writebuff[59] = EEPROM_Read(7);                     // Hi(Current_Constant)
-    writebuff[60] = EEPROM_Read(8);                     // Higher(Current_Constant)
-    writebuff[61] = EEPROM_Read(9);                     // Highest(Current_Constant)
-
-    // load Current_offset
-    writebuff[62] = EEPROM_Read(10);                    // Lo(Current_offset)
-    writebuff[63] = EEPROM_Read(11);                    // Hi(Current_offset)
+    // read nvConstant1
+    for(i = 0; i < 4; i++)
+    {
+        writebuff[NV_CONST_WRITE_DATA_ADDRESS + i] = EEPROM_Read(NV_CONST_EEPROM_ADDRESS + i);
+        Delay_ms(5);
+    }
+    
+    // read nvConstant2
+    for(i = 4; i < 8; i++)
+    {
+        writebuff[NV_CONST_WRITE_DATA_ADDRESS + i] = EEPROM_Read(NV_CONST_EEPROM_ADDRESS + i);
+        Delay_ms(5);
+    }
+    
+    // read nvConstant3
+    for(i = 8; i < 12; i++)
+    {
+        writebuff[NV_CONST_WRITE_DATA_ADDRESS + i] = EEPROM_Read(NV_CONST_EEPROM_ADDRESS + i);
+        Delay_ms(5);
+    }
+    
+    // read nvConstant4
+    for(i = 12; i < 16; i++)
+    {
+        writebuff[NV_CONST_WRITE_DATA_ADDRESS + i] = EEPROM_Read(NV_CONST_EEPROM_ADDRESS + i);
+        Delay_ms(5);
+    }
+    
+    /*
+    writebuff[48] = EEPROM_Read(0);                     // Lo(nvConstant1)
+    writebuff[49] = EEPROM_Read(1);                     // Hi(nvConstant1)
+    writebuff[50] = EEPROM_Read(2);                     // Higher(nvConstant1)
+    writebuff[51] = EEPROM_Read(3);                     // Highest(nvConstant1)
+    */
 }

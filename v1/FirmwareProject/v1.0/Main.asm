@@ -1,19 +1,19 @@
 
 _main:
 
-;Main.c,72 :: 		void main()
-;Main.c,75 :: 		unsigned char i = 0;
+;Main.c,77 :: 		void main()
+;Main.c,80 :: 		unsigned char i = 0;
 	CLRF        main_i_L0+0 
 	CLRF        main_buffIndex_L0+0 
 	CLRF        main_AbsValue_L0+0 
 	CLRF        main_AbsValue_L0+1 
-;Main.c,81 :: 		ConfigureIO();
+;Main.c,87 :: 		ConfigureIO();
 	CALL        _ConfigureIO+0, 0
-;Main.c,82 :: 		ConfigureModules();
+;Main.c,88 :: 		ConfigureModules();
 	CALL        _ConfigureModules+0, 0
-;Main.c,83 :: 		ConfigureInterrupts();
+;Main.c,89 :: 		ConfigureInterrupts();
 	CALL        _ConfigureInterrupts+0, 0
-;Main.c,96 :: 		SPI1_Init_Advanced(_SPI_MASTER_OSC_DIV16, _SPI_DATA_SAMPLE_MIDDLE, _SPI_CLK_IDLE_LOW, _SPI_LOW_2_HIGH);
+;Main.c,102 :: 		SPI1_Init_Advanced(_SPI_MASTER_OSC_DIV16, _SPI_DATA_SAMPLE_MIDDLE, _SPI_CLK_IDLE_LOW, _SPI_LOW_2_HIGH);
 	MOVLW       1
 	MOVWF       FARG_SPI1_Init_Advanced_master+0 
 	CLRF        FARG_SPI1_Init_Advanced_data_sample+0 
@@ -21,28 +21,36 @@ _main:
 	MOVLW       1
 	MOVWF       FARG_SPI1_Init_Advanced_transmit_edge+0 
 	CALL        _SPI1_Init_Advanced+0, 0
-;Main.c,99 :: 		USBDev_HIDInit();
+;Main.c,105 :: 		USBDev_HIDInit();
 	CALL        _USBDev_HIDInit+0, 0
-;Main.c,102 :: 		USBDev_Init();
+;Main.c,108 :: 		USBDev_Init();
 	CALL        _USBDev_Init+0, 0
-;Main.c,105 :: 		IPEN_bit = 1;
+;Main.c,111 :: 		IPEN_bit = 1;
 	BSF         IPEN_bit+0, BitPos(IPEN_bit+0) 
-;Main.c,106 :: 		USBIP_bit = 1;
+;Main.c,112 :: 		USBIP_bit = 1;
 	BSF         USBIP_bit+0, BitPos(USBIP_bit+0) 
-;Main.c,107 :: 		USBIE_bit = 1;
+;Main.c,113 :: 		USBIE_bit = 1;
 	BSF         USBIE_bit+0, BitPos(USBIE_bit+0) 
-;Main.c,108 :: 		GIEH_bit = 1;
+;Main.c,114 :: 		GIEH_bit = 1;
 	BSF         GIEH_bit+0, BitPos(GIEH_bit+0) 
-;Main.c,111 :: 		MCP3304_Init();
+;Main.c,117 :: 		MCP3304_Init();
 	CALL        _MCP3304_Init+0, 0
-;Main.c,114 :: 		for(i = 0; i < 64; i++) { readbuff[1] = 0; writebuff[i] = 0; }
+;Main.c,120 :: 		for(i = 0; i < 64; i++) { readbuff[i] = 0; writebuff[i] = 0; }
 	CLRF        main_i_L0+0 
 L_main0:
 	MOVLW       64
 	SUBWF       main_i_L0+0, 0 
 	BTFSC       STATUS+0, 0 
 	GOTO        L_main1
-	CLRF        1281 
+	MOVLW       _readbuff+0
+	MOVWF       FSR1 
+	MOVLW       hi_addr(_readbuff+0)
+	MOVWF       FSR1H 
+	MOVF        main_i_L0+0, 0 
+	ADDWF       FSR1, 1 
+	BTFSC       STATUS+0, 0 
+	INCF        FSR1H, 1 
+	CLRF        POSTINC1+0 
 	MOVLW       _writebuff+0
 	MOVWF       FSR1 
 	MOVLW       hi_addr(_writebuff+0)
@@ -55,9 +63,9 @@ L_main0:
 	INCF        main_i_L0+0, 1 
 	GOTO        L_main0
 L_main1:
-;Main.c,117 :: 		LoadConstantsAndOffsets();
-	CALL        _LoadConstantsAndOffsets+0, 0
-;Main.c,120 :: 		while(USBDev_GetDeviceState() != _USB_DEV_STATE_CONFIGURED) { }
+;Main.c,123 :: 		LoadNonVolatileConstants();
+	CALL        _LoadNonVolatileConstants+0, 0
+;Main.c,126 :: 		while(USBDev_GetDeviceState() != _USB_DEV_STATE_CONFIGURED) { }
 L_main3:
 	CALL        _USBDev_GetDeviceState+0, 0
 	MOVF        R0, 0 
@@ -66,49 +74,51 @@ L_main3:
 	GOTO        L_main4
 	GOTO        L_main3
 L_main4:
-;Main.c,123 :: 		_OP_SIG = 0;
+;Main.c,129 :: 		_OP_SIG = 0;
 	BCF         LATA0_bit+0, BitPos(LATA0_bit+0) 
-;Main.c,124 :: 		_DR_SIG = 0;
+;Main.c,130 :: 		_DR_SIG = 0;
 	BCF         TRISA0_bit+0, BitPos(TRISA0_bit+0) 
-;Main.c,128 :: 		while(1)
+;Main.c,134 :: 		while(1)
 L_main5:
-;Main.c,131 :: 		_OP_SIG = 1;
+;Main.c,137 :: 		_OP_SIG = 1;
 	BSF         LATA0_bit+0, BitPos(LATA0_bit+0) 
-;Main.c,135 :: 		if(UsbNewPacketReceived)
+;Main.c,141 :: 		if(UsbNewPacketReceived)
 	MOVF        _UsbNewPacketReceived+0, 1 
 	BTFSC       STATUS+0, 2 
 	GOTO        L_main7
-;Main.c,137 :: 		if(readbuff[0] == CMD_SET_CALIBRATION)
+;Main.c,143 :: 		if(readbuff[NV_CONST_CMD_ADDRESS] == CMD_SET_NV_CONSTANT)
 	MOVF        1280, 0 
 	XORLW       163
 	BTFSS       STATUS+0, 2 
 	GOTO        L_main8
-;Main.c,139 :: 		SaveConstantsAndOffsets();
-	CALL        _SaveConstantsAndOffsets+0, 0
-;Main.c,140 :: 		LoadConstantsAndOffsets();
-	CALL        _LoadConstantsAndOffsets+0, 0
-;Main.c,141 :: 		}
+;Main.c,146 :: 		SaveNonVolatileConstants(nvConstantMusk);
+	MOVF        1281, 0 
+	MOVWF       FARG_SaveNonVolatileConstants_musk+0 
+	CALL        _SaveNonVolatileConstants+0, 0
+;Main.c,147 :: 		LoadNonVolatileConstants();
+	CALL        _LoadNonVolatileConstants+0, 0
+;Main.c,148 :: 		}
 L_main8:
-;Main.c,142 :: 		UsbNewPacketReceived = 0;
+;Main.c,149 :: 		UsbNewPacketReceived = 0;
 	CLRF        _UsbNewPacketReceived+0 
-;Main.c,143 :: 		}
+;Main.c,150 :: 		}
 L_main7:
-;Main.c,146 :: 		buffIndex = 0;
+;Main.c,153 :: 		buffIndex = ANALOG_CH1_ADDRESS;
 	CLRF        main_buffIndex_L0+0 
-;Main.c,147 :: 		for(i = 0; i < 12; i++)
+;Main.c,154 :: 		for(i = 0; i < 12; i++)
 	CLRF        main_i_L0+0 
 L_main9:
 	MOVLW       12
 	SUBWF       main_i_L0+0, 0 
 	BTFSC       STATUS+0, 0 
 	GOTO        L_main10
-;Main.c,150 :: 		MCP3304_Read(0);
+;Main.c,157 :: 		MCP3304_Read(0);
 	CLRF        FARG_MCP3304_Read_Channel+0 
 	CALL        _MCP3304_Read+0, 0
-;Main.c,153 :: 		if(MCP3304_Data & 0x8000)
+;Main.c,160 :: 		if(MCP3304_Data & 0x8000)
 	BTFSS       _MCP3304_Data+1, 7 
 	GOTO        L_main12
-;Main.c,155 :: 		AbsValue =  MCP3304_Data * -1;
+;Main.c,162 :: 		AbsValue =  MCP3304_Data * -1;
 	MOVF        _MCP3304_Data+0, 0 
 	MOVWF       R0 
 	MOVF        _MCP3304_Data+1, 0 
@@ -122,11 +132,11 @@ L_main9:
 	MOVWF       main_AbsValue_L0+0 
 	MOVF        R1, 0 
 	MOVWF       main_AbsValue_L0+1 
-;Main.c,156 :: 		MCP3304_Data = (AbsValue + lastVoltageValue) / 2;
-	MOVF        _lastVoltageValue+0, 0 
+;Main.c,163 :: 		MCP3304_Data = (AbsValue + lastChannel1Value) / 2;
+	MOVF        _lastChannel1Value+0, 0 
 	ADDWF       R0, 0 
 	MOVWF       R3 
-	MOVF        _lastVoltageValue+1, 0 
+	MOVF        _lastChannel1Value+1, 0 
 	ADDWFC      R1, 0 
 	MOVWF       R4 
 	MOVF        R3, 0 
@@ -140,7 +150,7 @@ L_main9:
 	MOVWF       _MCP3304_Data+0 
 	MOVF        R1, 0 
 	MOVWF       _MCP3304_Data+1 
-;Main.c,157 :: 		MCP3304_Data *= -1;
+;Main.c,164 :: 		MCP3304_Data *= -1;
 	MOVLW       255
 	MOVWF       R4 
 	MOVLW       255
@@ -150,7 +160,7 @@ L_main9:
 	MOVWF       _MCP3304_Data+0 
 	MOVF        R1, 0 
 	MOVWF       _MCP3304_Data+1 
-;Main.c,158 :: 		Delay_us(5);
+;Main.c,165 :: 		Delay_us(5);
 	MOVLW       19
 	MOVWF       R13, 0
 L_main13:
@@ -158,23 +168,23 @@ L_main13:
 	BRA         L_main13
 	NOP
 	NOP
-;Main.c,159 :: 		}
+;Main.c,166 :: 		}
 	GOTO        L_main14
 L_main12:
-;Main.c,162 :: 		AbsValue =  MCP3304_Data;
+;Main.c,169 :: 		AbsValue =  MCP3304_Data;
 	MOVF        _MCP3304_Data+0, 0 
 	MOVWF       main_AbsValue_L0+0 
 	MOVF        _MCP3304_Data+1, 0 
 	MOVWF       main_AbsValue_L0+1 
-;Main.c,163 :: 		MCP3304_Data = (AbsValue + lastVoltageValue) / 2;
-	MOVF        _lastVoltageValue+0, 0 
+;Main.c,170 :: 		MCP3304_Data = (AbsValue + lastChannel1Value) / 2;
+	MOVF        _lastChannel1Value+0, 0 
 	ADDWF       _MCP3304_Data+0, 1 
-	MOVF        _lastVoltageValue+1, 0 
+	MOVF        _lastChannel1Value+1, 0 
 	ADDWFC      _MCP3304_Data+1, 1 
 	RRCF        _MCP3304_Data+1, 1 
 	RRCF        _MCP3304_Data+0, 1 
 	BCF         _MCP3304_Data+1, 7 
-;Main.c,164 :: 		Delay_us(15);
+;Main.c,171 :: 		Delay_us(15);
 	MOVLW       59
 	MOVWF       R13, 0
 L_main15:
@@ -182,14 +192,14 @@ L_main15:
 	BRA         L_main15
 	NOP
 	NOP
-;Main.c,165 :: 		}
+;Main.c,172 :: 		}
 L_main14:
-;Main.c,166 :: 		lastVoltageValue = AbsValue;
+;Main.c,173 :: 		lastChannel1Value = AbsValue;
 	MOVF        main_AbsValue_L0+0, 0 
-	MOVWF       _lastVoltageValue+0 
+	MOVWF       _lastChannel1Value+0 
 	MOVF        main_AbsValue_L0+1, 0 
-	MOVWF       _lastVoltageValue+1 
-;Main.c,169 :: 		writebuff[buffIndex] = Lo(MCP3304_Data);
+	MOVWF       _lastChannel1Value+1 
+;Main.c,176 :: 		writebuff[buffIndex] = Lo(MCP3304_Data);
 	MOVLW       _writebuff+0
 	MOVWF       FSR1 
 	MOVLW       hi_addr(_writebuff+0)
@@ -200,7 +210,7 @@ L_main14:
 	INCF        FSR1H, 1 
 	MOVF        _MCP3304_Data+0, 0 
 	MOVWF       POSTINC1+0 
-;Main.c,170 :: 		writebuff[buffIndex + 1] = Hi(MCP3304_Data);
+;Main.c,177 :: 		writebuff[buffIndex + 1] = Hi(MCP3304_Data);
 	MOVF        main_buffIndex_L0+0, 0 
 	ADDLW       1
 	MOVWF       R0 
@@ -215,32 +225,32 @@ L_main14:
 	MOVWF       FSR1H 
 	MOVF        _MCP3304_Data+1, 0 
 	MOVWF       POSTINC1+0 
-;Main.c,171 :: 		buffIndex += 2;
+;Main.c,178 :: 		buffIndex += 2;
 	MOVLW       2
 	ADDWF       main_buffIndex_L0+0, 1 
-;Main.c,147 :: 		for(i = 0; i < 12; i++)
+;Main.c,154 :: 		for(i = 0; i < 12; i++)
 	INCF        main_i_L0+0, 1 
-;Main.c,172 :: 		}
+;Main.c,179 :: 		}
 	GOTO        L_main9
 L_main10:
-;Main.c,175 :: 		buffIndex = 24;
+;Main.c,182 :: 		buffIndex = ANALOG_CH2_ADDRESS;
 	MOVLW       24
 	MOVWF       main_buffIndex_L0+0 
-;Main.c,176 :: 		for(i = 0; i < 12; i++)
+;Main.c,183 :: 		for(i = 0; i < 12; i++)
 	CLRF        main_i_L0+0 
 L_main16:
 	MOVLW       12
 	SUBWF       main_i_L0+0, 0 
 	BTFSC       STATUS+0, 0 
 	GOTO        L_main17
-;Main.c,179 :: 		MCP3304_Read(2);
+;Main.c,186 :: 		MCP3304_Read(2);
 	MOVLW       2
 	MOVWF       FARG_MCP3304_Read_Channel+0 
 	CALL        _MCP3304_Read+0, 0
-;Main.c,182 :: 		if(MCP3304_Data & 0x8000)
+;Main.c,189 :: 		if(MCP3304_Data & 0x8000)
 	BTFSS       _MCP3304_Data+1, 7 
 	GOTO        L_main19
-;Main.c,184 :: 		AbsValue =  MCP3304_Data * -1;
+;Main.c,191 :: 		AbsValue =  MCP3304_Data * -1;
 	MOVF        _MCP3304_Data+0, 0 
 	MOVWF       R0 
 	MOVF        _MCP3304_Data+1, 0 
@@ -254,11 +264,11 @@ L_main16:
 	MOVWF       main_AbsValue_L0+0 
 	MOVF        R1, 0 
 	MOVWF       main_AbsValue_L0+1 
-;Main.c,185 :: 		MCP3304_Data = (AbsValue + lastCurrentValue) / 2;
-	MOVF        _lastCurrentValue+0, 0 
+;Main.c,192 :: 		MCP3304_Data = (AbsValue + lastChannel2Value) / 2;
+	MOVF        _lastChannel2Value+0, 0 
 	ADDWF       R0, 0 
 	MOVWF       R3 
-	MOVF        _lastCurrentValue+1, 0 
+	MOVF        _lastChannel2Value+1, 0 
 	ADDWFC      R1, 0 
 	MOVWF       R4 
 	MOVF        R3, 0 
@@ -272,7 +282,7 @@ L_main16:
 	MOVWF       _MCP3304_Data+0 
 	MOVF        R1, 0 
 	MOVWF       _MCP3304_Data+1 
-;Main.c,186 :: 		MCP3304_Data *= -1;
+;Main.c,193 :: 		MCP3304_Data *= -1;
 	MOVLW       255
 	MOVWF       R4 
 	MOVLW       255
@@ -282,7 +292,7 @@ L_main16:
 	MOVWF       _MCP3304_Data+0 
 	MOVF        R1, 0 
 	MOVWF       _MCP3304_Data+1 
-;Main.c,187 :: 		Delay_us(5);
+;Main.c,194 :: 		Delay_us(5);
 	MOVLW       19
 	MOVWF       R13, 0
 L_main20:
@@ -290,23 +300,23 @@ L_main20:
 	BRA         L_main20
 	NOP
 	NOP
-;Main.c,188 :: 		}
+;Main.c,195 :: 		}
 	GOTO        L_main21
 L_main19:
-;Main.c,191 :: 		AbsValue =  MCP3304_Data;
+;Main.c,198 :: 		AbsValue =  MCP3304_Data;
 	MOVF        _MCP3304_Data+0, 0 
 	MOVWF       main_AbsValue_L0+0 
 	MOVF        _MCP3304_Data+1, 0 
 	MOVWF       main_AbsValue_L0+1 
-;Main.c,192 :: 		MCP3304_Data = (AbsValue + lastCurrentValue) / 2;
-	MOVF        _lastCurrentValue+0, 0 
+;Main.c,199 :: 		MCP3304_Data = (AbsValue + lastChannel2Value) / 2;
+	MOVF        _lastChannel2Value+0, 0 
 	ADDWF       _MCP3304_Data+0, 1 
-	MOVF        _lastCurrentValue+1, 0 
+	MOVF        _lastChannel2Value+1, 0 
 	ADDWFC      _MCP3304_Data+1, 1 
 	RRCF        _MCP3304_Data+1, 1 
 	RRCF        _MCP3304_Data+0, 1 
 	BCF         _MCP3304_Data+1, 7 
-;Main.c,193 :: 		Delay_us(15);
+;Main.c,200 :: 		Delay_us(15);
 	MOVLW       59
 	MOVWF       R13, 0
 L_main22:
@@ -314,14 +324,14 @@ L_main22:
 	BRA         L_main22
 	NOP
 	NOP
-;Main.c,194 :: 		}
+;Main.c,201 :: 		}
 L_main21:
-;Main.c,195 :: 		lastCurrentValue = AbsValue;
+;Main.c,202 :: 		lastChannel2Value = AbsValue;
 	MOVF        main_AbsValue_L0+0, 0 
-	MOVWF       _lastCurrentValue+0 
+	MOVWF       _lastChannel2Value+0 
 	MOVF        main_AbsValue_L0+1, 0 
-	MOVWF       _lastCurrentValue+1 
-;Main.c,198 :: 		writebuff[buffIndex] = Lo(MCP3304_Data);
+	MOVWF       _lastChannel2Value+1 
+;Main.c,205 :: 		writebuff[buffIndex] = Lo(MCP3304_Data);
 	MOVLW       _writebuff+0
 	MOVWF       FSR1 
 	MOVLW       hi_addr(_writebuff+0)
@@ -332,7 +342,7 @@ L_main21:
 	INCF        FSR1H, 1 
 	MOVF        _MCP3304_Data+0, 0 
 	MOVWF       POSTINC1+0 
-;Main.c,199 :: 		writebuff[buffIndex + 1] = Hi(MCP3304_Data);
+;Main.c,206 :: 		writebuff[buffIndex + 1] = Hi(MCP3304_Data);
 	MOVF        main_buffIndex_L0+0, 0 
 	ADDLW       1
 	MOVWF       R0 
@@ -347,86 +357,54 @@ L_main21:
 	MOVWF       FSR1H 
 	MOVF        _MCP3304_Data+1, 0 
 	MOVWF       POSTINC1+0 
-;Main.c,200 :: 		buffIndex += 2;
+;Main.c,207 :: 		buffIndex += 2;
 	MOVLW       2
 	ADDWF       main_buffIndex_L0+0, 1 
-;Main.c,176 :: 		for(i = 0; i < 12; i++)
+;Main.c,183 :: 		for(i = 0; i < 12; i++)
 	INCF        main_i_L0+0, 1 
-;Main.c,201 :: 		}
+;Main.c,208 :: 		}
 	GOTO        L_main16
 L_main17:
-;Main.c,204 :: 		_OP_SIG = 0;
+;Main.c,211 :: 		_OP_SIG = 0;
 	BCF         LATA0_bit+0, BitPos(LATA0_bit+0) 
-;Main.c,208 :: 		HID_WriteBuffer();
+;Main.c,215 :: 		HID_WriteBuffer();
 	CALL        _HID_WriteBuffer+0, 0
-;Main.c,209 :: 		}
+;Main.c,216 :: 		}
 	GOTO        L_main5
-;Main.c,210 :: 		}
+;Main.c,217 :: 		}
 L_end_main:
 	GOTO        $+0
 ; end of _main
 
-_SaveConstantsAndOffsets:
+_SaveNonVolatileConstants:
 
-;Main.c,213 :: 		void SaveConstantsAndOffsets()
-;Main.c,216 :: 		Lo(Voltage_Constant) = readbuff[1];
-	MOVF        1281, 0 
-	MOVWF       _Voltage_Constant+0 
-;Main.c,217 :: 		Hi(Voltage_Constant) = readbuff[2];
-	MOVF        1282, 0 
-	MOVWF       _Voltage_Constant+1 
-;Main.c,218 :: 		Higher(Voltage_Constant) = readbuff[3];
-	MOVF        1283, 0 
-	MOVWF       _Voltage_Constant+2 
-;Main.c,219 :: 		Highest(Voltage_Constant) = readbuff[4];
-	MOVF        1284, 0 
-	MOVWF       _Voltage_Constant+3 
-;Main.c,220 :: 		ConvertIEEE754FloatToMicrochip(&Voltage_Constant);
-	MOVLW       _Voltage_Constant+0
-	MOVWF       FARG_ConvertIEEE754FloatToMicrochip_f+0 
-	MOVLW       hi_addr(_Voltage_Constant+0)
-	MOVWF       FARG_ConvertIEEE754FloatToMicrochip_f+1 
-	CALL        _ConvertIEEE754FloatToMicrochip+0, 0
-;Main.c,223 :: 		if(Voltage_Constant != 0)
-	MOVF        _Voltage_Constant+0, 0 
-	MOVWF       R0 
-	MOVF        _Voltage_Constant+1, 0 
-	MOVWF       R1 
-	MOVF        _Voltage_Constant+2, 0 
-	MOVWF       R2 
-	MOVF        _Voltage_Constant+3, 0 
-	MOVWF       R3 
-	CLRF        R4 
-	CLRF        R5 
-	CLRF        R6 
-	CLRF        R7 
-	CALL        _Equals_Double+0, 0
-	MOVLW       0
-	BTFSS       STATUS+0, 2 
-	MOVLW       1
-	MOVWF       R0 
-	MOVF        R0, 1 
-	BTFSC       STATUS+0, 2 
-	GOTO        L_SaveConstantsAndOffsets23
-;Main.c,226 :: 		EEPROM_Write(0, readbuff[1]);                     // Lo(Voltage_Constant)
-	CLRF        FARG_EEPROM_Write_address+0 
-	MOVF        1281, 0 
-	MOVWF       FARG_EEPROM_Write_data_+0 
-	CALL        _EEPROM_Write+0, 0
-;Main.c,227 :: 		Delay_ms(5);
-	MOVLW       78
-	MOVWF       R12, 0
-	MOVLW       235
-	MOVWF       R13, 0
-L_SaveConstantsAndOffsets24:
-	DECFSZ      R13, 1, 1
-	BRA         L_SaveConstantsAndOffsets24
-	DECFSZ      R12, 1, 1
-	BRA         L_SaveConstantsAndOffsets24
-;Main.c,228 :: 		EEPROM_Write(1, readbuff[2]);                     // Hi(Voltage_Constant)
-	MOVLW       1
+;Main.c,219 :: 		void SaveNonVolatileConstants(unsigned char musk)
+;Main.c,224 :: 		if(musk & 0x01)
+	BTFSS       FARG_SaveNonVolatileConstants_musk+0, 0 
+	GOTO        L_SaveNonVolatileConstants23
+;Main.c,226 :: 		for(i = 0; i < 4; i++)
+	CLRF        SaveNonVolatileConstants_i_L0+0 
+L_SaveNonVolatileConstants24:
+	MOVLW       4
+	SUBWF       SaveNonVolatileConstants_i_L0+0, 0 
+	BTFSC       STATUS+0, 0 
+	GOTO        L_SaveNonVolatileConstants25
+;Main.c,228 :: 		EEPROM_Write(NV_CONST_EEPROM_ADDRESS + i, readbuff[NV_CONST_READ_DATA_ADDRESS + i]);
+	MOVF        SaveNonVolatileConstants_i_L0+0, 0 
 	MOVWF       FARG_EEPROM_Write_address+0 
-	MOVF        1282, 0 
+	MOVF        SaveNonVolatileConstants_i_L0+0, 0 
+	ADDLW       2
+	MOVWF       R0 
+	CLRF        R1 
+	MOVLW       0
+	ADDWFC      R1, 1 
+	MOVLW       _readbuff+0
+	ADDWF       R0, 0 
+	MOVWF       FSR0 
+	MOVLW       hi_addr(_readbuff+0)
+	ADDWFC      R1, 0 
+	MOVWF       FSR0H 
+	MOVF        POSTINC0+0, 0 
 	MOVWF       FARG_EEPROM_Write_data_+0 
 	CALL        _EEPROM_Write+0, 0
 ;Main.c,229 :: 		Delay_ms(5);
@@ -434,63 +412,45 @@ L_SaveConstantsAndOffsets24:
 	MOVWF       R12, 0
 	MOVLW       235
 	MOVWF       R13, 0
-L_SaveConstantsAndOffsets25:
+L_SaveNonVolatileConstants27:
 	DECFSZ      R13, 1, 1
-	BRA         L_SaveConstantsAndOffsets25
+	BRA         L_SaveNonVolatileConstants27
 	DECFSZ      R12, 1, 1
-	BRA         L_SaveConstantsAndOffsets25
-;Main.c,230 :: 		EEPROM_Write(2, readbuff[3]);                     // Higher(Voltage_Constant)
-	MOVLW       2
-	MOVWF       FARG_EEPROM_Write_address+0 
-	MOVF        1283, 0 
-	MOVWF       FARG_EEPROM_Write_data_+0 
-	CALL        _EEPROM_Write+0, 0
-;Main.c,231 :: 		Delay_ms(5);
-	MOVLW       78
-	MOVWF       R12, 0
-	MOVLW       235
-	MOVWF       R13, 0
-L_SaveConstantsAndOffsets26:
-	DECFSZ      R13, 1, 1
-	BRA         L_SaveConstantsAndOffsets26
-	DECFSZ      R12, 1, 1
-	BRA         L_SaveConstantsAndOffsets26
-;Main.c,232 :: 		EEPROM_Write(3, readbuff[4]);                     // Highest(Voltage_Constant)
-	MOVLW       3
-	MOVWF       FARG_EEPROM_Write_address+0 
-	MOVF        1284, 0 
-	MOVWF       FARG_EEPROM_Write_data_+0 
-	CALL        _EEPROM_Write+0, 0
-;Main.c,233 :: 		Delay_ms(5);
-	MOVLW       78
-	MOVWF       R12, 0
-	MOVLW       235
-	MOVWF       R13, 0
-L_SaveConstantsAndOffsets27:
-	DECFSZ      R13, 1, 1
-	BRA         L_SaveConstantsAndOffsets27
-	DECFSZ      R12, 1, 1
-	BRA         L_SaveConstantsAndOffsets27
-;Main.c,236 :: 		EEPROM_Write(4, readbuff[5]);                     // Lo(Voltage_offset)
+	BRA         L_SaveNonVolatileConstants27
+;Main.c,226 :: 		for(i = 0; i < 4; i++)
+	INCF        SaveNonVolatileConstants_i_L0+0, 1 
+;Main.c,230 :: 		}
+	GOTO        L_SaveNonVolatileConstants24
+L_SaveNonVolatileConstants25:
+;Main.c,231 :: 		}
+L_SaveNonVolatileConstants23:
+;Main.c,234 :: 		if(musk & 0x02)
+	BTFSS       FARG_SaveNonVolatileConstants_musk+0, 1 
+	GOTO        L_SaveNonVolatileConstants28
+;Main.c,236 :: 		for(i = 4; i < 8; i++)
 	MOVLW       4
+	MOVWF       SaveNonVolatileConstants_i_L0+0 
+L_SaveNonVolatileConstants29:
+	MOVLW       8
+	SUBWF       SaveNonVolatileConstants_i_L0+0, 0 
+	BTFSC       STATUS+0, 0 
+	GOTO        L_SaveNonVolatileConstants30
+;Main.c,238 :: 		EEPROM_Write(NV_CONST_EEPROM_ADDRESS + i, readbuff[NV_CONST_READ_DATA_ADDRESS + i]);
+	MOVF        SaveNonVolatileConstants_i_L0+0, 0 
 	MOVWF       FARG_EEPROM_Write_address+0 
-	MOVF        1285, 0 
-	MOVWF       FARG_EEPROM_Write_data_+0 
-	CALL        _EEPROM_Write+0, 0
-;Main.c,237 :: 		Delay_ms(5);
-	MOVLW       78
-	MOVWF       R12, 0
-	MOVLW       235
-	MOVWF       R13, 0
-L_SaveConstantsAndOffsets28:
-	DECFSZ      R13, 1, 1
-	BRA         L_SaveConstantsAndOffsets28
-	DECFSZ      R12, 1, 1
-	BRA         L_SaveConstantsAndOffsets28
-;Main.c,238 :: 		EEPROM_Write(5, readbuff[6]);                     // Hi(Voltage_offset)
-	MOVLW       5
-	MOVWF       FARG_EEPROM_Write_address+0 
-	MOVF        1286, 0 
+	MOVF        SaveNonVolatileConstants_i_L0+0, 0 
+	ADDLW       2
+	MOVWF       R0 
+	CLRF        R1 
+	MOVLW       0
+	ADDWFC      R1, 1 
+	MOVLW       _readbuff+0
+	ADDWF       R0, 0 
+	MOVWF       FSR0 
+	MOVLW       hi_addr(_readbuff+0)
+	ADDWFC      R1, 0 
+	MOVWF       FSR0H 
+	MOVF        POSTINC0+0, 0 
 	MOVWF       FARG_EEPROM_Write_data_+0 
 	CALL        _EEPROM_Write+0, 0
 ;Main.c,239 :: 		Delay_ms(5);
@@ -498,230 +458,290 @@ L_SaveConstantsAndOffsets28:
 	MOVWF       R12, 0
 	MOVLW       235
 	MOVWF       R13, 0
-L_SaveConstantsAndOffsets29:
+L_SaveNonVolatileConstants32:
 	DECFSZ      R13, 1, 1
-	BRA         L_SaveConstantsAndOffsets29
+	BRA         L_SaveNonVolatileConstants32
 	DECFSZ      R12, 1, 1
-	BRA         L_SaveConstantsAndOffsets29
+	BRA         L_SaveNonVolatileConstants32
+;Main.c,236 :: 		for(i = 4; i < 8; i++)
+	INCF        SaveNonVolatileConstants_i_L0+0, 1 
 ;Main.c,240 :: 		}
-L_SaveConstantsAndOffsets23:
-;Main.c,243 :: 		Lo(Current_Constant) = readbuff[7];
-	MOVF        1287, 0 
-	MOVWF       _Current_Constant+0 
-;Main.c,244 :: 		Hi(Current_Constant) = readbuff[8];
-	MOVF        1288, 0 
-	MOVWF       _Current_Constant+1 
-;Main.c,245 :: 		Higher(Current_Constant) = readbuff[9];
-	MOVF        1289, 0 
-	MOVWF       _Current_Constant+2 
-;Main.c,246 :: 		Highest(Current_Constant) = readbuff[10];
-	MOVF        1290, 0 
-	MOVWF       _Current_Constant+3 
-;Main.c,247 :: 		ConvertIEEE754FloatToMicrochip(&Current_Constant);
-	MOVLW       _Current_Constant+0
-	MOVWF       FARG_ConvertIEEE754FloatToMicrochip_f+0 
-	MOVLW       hi_addr(_Current_Constant+0)
-	MOVWF       FARG_ConvertIEEE754FloatToMicrochip_f+1 
-	CALL        _ConvertIEEE754FloatToMicrochip+0, 0
-;Main.c,250 :: 		if(Current_Constant != 0)
-	MOVF        _Current_Constant+0, 0 
+	GOTO        L_SaveNonVolatileConstants29
+L_SaveNonVolatileConstants30:
+;Main.c,241 :: 		}
+L_SaveNonVolatileConstants28:
+;Main.c,244 :: 		if(musk & 0x04)
+	BTFSS       FARG_SaveNonVolatileConstants_musk+0, 2 
+	GOTO        L_SaveNonVolatileConstants33
+;Main.c,246 :: 		for(i = 8; i < 12; i++)
+	MOVLW       8
+	MOVWF       SaveNonVolatileConstants_i_L0+0 
+L_SaveNonVolatileConstants34:
+	MOVLW       12
+	SUBWF       SaveNonVolatileConstants_i_L0+0, 0 
+	BTFSC       STATUS+0, 0 
+	GOTO        L_SaveNonVolatileConstants35
+;Main.c,248 :: 		EEPROM_Write(NV_CONST_EEPROM_ADDRESS + i, readbuff[NV_CONST_READ_DATA_ADDRESS + i]);
+	MOVF        SaveNonVolatileConstants_i_L0+0, 0 
+	MOVWF       FARG_EEPROM_Write_address+0 
+	MOVF        SaveNonVolatileConstants_i_L0+0, 0 
+	ADDLW       2
 	MOVWF       R0 
-	MOVF        _Current_Constant+1, 0 
-	MOVWF       R1 
-	MOVF        _Current_Constant+2, 0 
-	MOVWF       R2 
-	MOVF        _Current_Constant+3, 0 
-	MOVWF       R3 
-	CLRF        R4 
-	CLRF        R5 
-	CLRF        R6 
-	CLRF        R7 
-	CALL        _Equals_Double+0, 0
+	CLRF        R1 
 	MOVLW       0
-	BTFSS       STATUS+0, 2 
-	MOVLW       1
+	ADDWFC      R1, 1 
+	MOVLW       _readbuff+0
+	ADDWF       R0, 0 
+	MOVWF       FSR0 
+	MOVLW       hi_addr(_readbuff+0)
+	ADDWFC      R1, 0 
+	MOVWF       FSR0H 
+	MOVF        POSTINC0+0, 0 
+	MOVWF       FARG_EEPROM_Write_data_+0 
+	CALL        _EEPROM_Write+0, 0
+;Main.c,249 :: 		Delay_ms(5);
+	MOVLW       78
+	MOVWF       R12, 0
+	MOVLW       235
+	MOVWF       R13, 0
+L_SaveNonVolatileConstants37:
+	DECFSZ      R13, 1, 1
+	BRA         L_SaveNonVolatileConstants37
+	DECFSZ      R12, 1, 1
+	BRA         L_SaveNonVolatileConstants37
+;Main.c,246 :: 		for(i = 8; i < 12; i++)
+	INCF        SaveNonVolatileConstants_i_L0+0, 1 
+;Main.c,250 :: 		}
+	GOTO        L_SaveNonVolatileConstants34
+L_SaveNonVolatileConstants35:
+;Main.c,251 :: 		}
+L_SaveNonVolatileConstants33:
+;Main.c,254 :: 		if(musk & 0x08)
+	BTFSS       FARG_SaveNonVolatileConstants_musk+0, 3 
+	GOTO        L_SaveNonVolatileConstants38
+;Main.c,256 :: 		for(i = 12; i < 16; i++)
+	MOVLW       12
+	MOVWF       SaveNonVolatileConstants_i_L0+0 
+L_SaveNonVolatileConstants39:
+	MOVLW       16
+	SUBWF       SaveNonVolatileConstants_i_L0+0, 0 
+	BTFSC       STATUS+0, 0 
+	GOTO        L_SaveNonVolatileConstants40
+;Main.c,258 :: 		EEPROM_Write(NV_CONST_EEPROM_ADDRESS + i, readbuff[NV_CONST_READ_DATA_ADDRESS + i]);
+	MOVF        SaveNonVolatileConstants_i_L0+0, 0 
+	MOVWF       FARG_EEPROM_Write_address+0 
+	MOVF        SaveNonVolatileConstants_i_L0+0, 0 
+	ADDLW       2
 	MOVWF       R0 
-	MOVF        R0, 1 
-	BTFSC       STATUS+0, 2 
-	GOTO        L_SaveConstantsAndOffsets30
-;Main.c,253 :: 		EEPROM_Write(6, readbuff[7]);                     // Lo(Current_Constant)
-	MOVLW       6
-	MOVWF       FARG_EEPROM_Write_address+0 
-	MOVF        1287, 0 
+	CLRF        R1 
+	MOVLW       0
+	ADDWFC      R1, 1 
+	MOVLW       _readbuff+0
+	ADDWF       R0, 0 
+	MOVWF       FSR0 
+	MOVLW       hi_addr(_readbuff+0)
+	ADDWFC      R1, 0 
+	MOVWF       FSR0H 
+	MOVF        POSTINC0+0, 0 
 	MOVWF       FARG_EEPROM_Write_data_+0 
 	CALL        _EEPROM_Write+0, 0
-;Main.c,254 :: 		Delay_ms(5);
+;Main.c,259 :: 		Delay_ms(5);
 	MOVLW       78
 	MOVWF       R12, 0
 	MOVLW       235
 	MOVWF       R13, 0
-L_SaveConstantsAndOffsets31:
+L_SaveNonVolatileConstants42:
 	DECFSZ      R13, 1, 1
-	BRA         L_SaveConstantsAndOffsets31
+	BRA         L_SaveNonVolatileConstants42
 	DECFSZ      R12, 1, 1
-	BRA         L_SaveConstantsAndOffsets31
-;Main.c,255 :: 		EEPROM_Write(7, readbuff[8]);                     // Hi(Current_Constant)
-	MOVLW       7
-	MOVWF       FARG_EEPROM_Write_address+0 
-	MOVF        1288, 0 
-	MOVWF       FARG_EEPROM_Write_data_+0 
-	CALL        _EEPROM_Write+0, 0
-;Main.c,256 :: 		Delay_ms(5);
-	MOVLW       78
-	MOVWF       R12, 0
-	MOVLW       235
-	MOVWF       R13, 0
-L_SaveConstantsAndOffsets32:
-	DECFSZ      R13, 1, 1
-	BRA         L_SaveConstantsAndOffsets32
-	DECFSZ      R12, 1, 1
-	BRA         L_SaveConstantsAndOffsets32
-;Main.c,257 :: 		EEPROM_Write(8, readbuff[9]);                     // Higher(Current_Constant)
-	MOVLW       8
-	MOVWF       FARG_EEPROM_Write_address+0 
-	MOVF        1289, 0 
-	MOVWF       FARG_EEPROM_Write_data_+0 
-	CALL        _EEPROM_Write+0, 0
-;Main.c,258 :: 		Delay_ms(5);
-	MOVLW       78
-	MOVWF       R12, 0
-	MOVLW       235
-	MOVWF       R13, 0
-L_SaveConstantsAndOffsets33:
-	DECFSZ      R13, 1, 1
-	BRA         L_SaveConstantsAndOffsets33
-	DECFSZ      R12, 1, 1
-	BRA         L_SaveConstantsAndOffsets33
-;Main.c,259 :: 		EEPROM_Write(9, readbuff[10]);                    // Highest(Current_Constant)
-	MOVLW       9
-	MOVWF       FARG_EEPROM_Write_address+0 
-	MOVF        1290, 0 
-	MOVWF       FARG_EEPROM_Write_data_+0 
-	CALL        _EEPROM_Write+0, 0
-;Main.c,260 :: 		Delay_ms(5);
-	MOVLW       78
-	MOVWF       R12, 0
-	MOVLW       235
-	MOVWF       R13, 0
-L_SaveConstantsAndOffsets34:
-	DECFSZ      R13, 1, 1
-	BRA         L_SaveConstantsAndOffsets34
-	DECFSZ      R12, 1, 1
-	BRA         L_SaveConstantsAndOffsets34
-;Main.c,263 :: 		EEPROM_Write(10, readbuff[11]);                   // Lo(Current_offset)
-	MOVLW       10
-	MOVWF       FARG_EEPROM_Write_address+0 
-	MOVF        1291, 0 
-	MOVWF       FARG_EEPROM_Write_data_+0 
-	CALL        _EEPROM_Write+0, 0
-;Main.c,264 :: 		Delay_ms(5);
-	MOVLW       78
-	MOVWF       R12, 0
-	MOVLW       235
-	MOVWF       R13, 0
-L_SaveConstantsAndOffsets35:
-	DECFSZ      R13, 1, 1
-	BRA         L_SaveConstantsAndOffsets35
-	DECFSZ      R12, 1, 1
-	BRA         L_SaveConstantsAndOffsets35
-;Main.c,265 :: 		EEPROM_Write(11, readbuff[12]);                   // Hi(Current_offset)
-	MOVLW       11
-	MOVWF       FARG_EEPROM_Write_address+0 
-	MOVF        1292, 0 
-	MOVWF       FARG_EEPROM_Write_data_+0 
-	CALL        _EEPROM_Write+0, 0
-;Main.c,266 :: 		Delay_ms(5);
-	MOVLW       78
-	MOVWF       R12, 0
-	MOVLW       235
-	MOVWF       R13, 0
-L_SaveConstantsAndOffsets36:
-	DECFSZ      R13, 1, 1
-	BRA         L_SaveConstantsAndOffsets36
-	DECFSZ      R12, 1, 1
-	BRA         L_SaveConstantsAndOffsets36
-;Main.c,267 :: 		}
-L_SaveConstantsAndOffsets30:
-;Main.c,268 :: 		}
-L_end_SaveConstantsAndOffsets:
+	BRA         L_SaveNonVolatileConstants42
+;Main.c,256 :: 		for(i = 12; i < 16; i++)
+	INCF        SaveNonVolatileConstants_i_L0+0, 1 
+;Main.c,260 :: 		}
+	GOTO        L_SaveNonVolatileConstants39
+L_SaveNonVolatileConstants40:
+;Main.c,261 :: 		}
+L_SaveNonVolatileConstants38:
+;Main.c,270 :: 		}
+L_end_SaveNonVolatileConstants:
 	RETURN      0
-; end of _SaveConstantsAndOffsets
+; end of _SaveNonVolatileConstants
 
-_LoadConstantsAndOffsets:
+_LoadNonVolatileConstants:
 
-;Main.c,271 :: 		void LoadConstantsAndOffsets()
-;Main.c,274 :: 		writebuff[52] = EEPROM_Read(0);                     // Lo(Voltage_Constant)
-	CLRF        FARG_EEPROM_Read_address+0 
-	CALL        _EEPROM_Read+0, 0
-	MOVF        R0, 0 
-	MOVWF       1396 
-;Main.c,275 :: 		writebuff[53] = EEPROM_Read(1);                     // Hi(Voltage_Constant)
-	MOVLW       1
-	MOVWF       FARG_EEPROM_Read_address+0 
-	CALL        _EEPROM_Read+0, 0
-	MOVF        R0, 0 
-	MOVWF       1397 
-;Main.c,276 :: 		writebuff[54] = EEPROM_Read(2);                     // Higher(Voltage_Constant)
-	MOVLW       2
-	MOVWF       FARG_EEPROM_Read_address+0 
-	CALL        _EEPROM_Read+0, 0
-	MOVF        R0, 0 
-	MOVWF       1398 
-;Main.c,277 :: 		writebuff[55] = EEPROM_Read(3);                     // Highest(Voltage_Constant)
-	MOVLW       3
-	MOVWF       FARG_EEPROM_Read_address+0 
-	CALL        _EEPROM_Read+0, 0
-	MOVF        R0, 0 
-	MOVWF       1399 
-;Main.c,280 :: 		writebuff[56] = EEPROM_Read(4);                     // Lo(Voltage_offset)
+;Main.c,272 :: 		void LoadNonVolatileConstants()
+;Main.c,277 :: 		for(i = 0; i < 4; i++)
+	CLRF        LoadNonVolatileConstants_i_L0+0 
+L_LoadNonVolatileConstants43:
 	MOVLW       4
+	SUBWF       LoadNonVolatileConstants_i_L0+0, 0 
+	BTFSC       STATUS+0, 0 
+	GOTO        L_LoadNonVolatileConstants44
+;Main.c,279 :: 		writebuff[NV_CONST_WRITE_DATA_ADDRESS + i] = EEPROM_Read(NV_CONST_EEPROM_ADDRESS + i);
+	MOVF        LoadNonVolatileConstants_i_L0+0, 0 
+	ADDLW       48
+	MOVWF       R0 
+	CLRF        R1 
+	MOVLW       0
+	ADDWFC      R1, 1 
+	MOVLW       _writebuff+0
+	ADDWF       R0, 0 
+	MOVWF       FLOC__LoadNonVolatileConstants+0 
+	MOVLW       hi_addr(_writebuff+0)
+	ADDWFC      R1, 0 
+	MOVWF       FLOC__LoadNonVolatileConstants+1 
+	MOVF        LoadNonVolatileConstants_i_L0+0, 0 
 	MOVWF       FARG_EEPROM_Read_address+0 
 	CALL        _EEPROM_Read+0, 0
+	MOVFF       FLOC__LoadNonVolatileConstants+0, FSR1
+	MOVFF       FLOC__LoadNonVolatileConstants+1, FSR1H
 	MOVF        R0, 0 
-	MOVWF       1400 
-;Main.c,281 :: 		writebuff[57] = EEPROM_Read(5);                     // Hi(Voltage_offset)
-	MOVLW       5
-	MOVWF       FARG_EEPROM_Read_address+0 
-	CALL        _EEPROM_Read+0, 0
-	MOVF        R0, 0 
-	MOVWF       1401 
-;Main.c,284 :: 		writebuff[58] = EEPROM_Read(6);                     // Lo(Current_Constant)
-	MOVLW       6
-	MOVWF       FARG_EEPROM_Read_address+0 
-	CALL        _EEPROM_Read+0, 0
-	MOVF        R0, 0 
-	MOVWF       1402 
-;Main.c,285 :: 		writebuff[59] = EEPROM_Read(7);                     // Hi(Current_Constant)
-	MOVLW       7
-	MOVWF       FARG_EEPROM_Read_address+0 
-	CALL        _EEPROM_Read+0, 0
-	MOVF        R0, 0 
-	MOVWF       1403 
-;Main.c,286 :: 		writebuff[60] = EEPROM_Read(8);                     // Higher(Current_Constant)
+	MOVWF       POSTINC1+0 
+;Main.c,280 :: 		Delay_ms(5);
+	MOVLW       78
+	MOVWF       R12, 0
+	MOVLW       235
+	MOVWF       R13, 0
+L_LoadNonVolatileConstants46:
+	DECFSZ      R13, 1, 1
+	BRA         L_LoadNonVolatileConstants46
+	DECFSZ      R12, 1, 1
+	BRA         L_LoadNonVolatileConstants46
+;Main.c,277 :: 		for(i = 0; i < 4; i++)
+	INCF        LoadNonVolatileConstants_i_L0+0, 1 
+;Main.c,281 :: 		}
+	GOTO        L_LoadNonVolatileConstants43
+L_LoadNonVolatileConstants44:
+;Main.c,284 :: 		for(i = 4; i < 8; i++)
+	MOVLW       4
+	MOVWF       LoadNonVolatileConstants_i_L0+0 
+L_LoadNonVolatileConstants47:
 	MOVLW       8
+	SUBWF       LoadNonVolatileConstants_i_L0+0, 0 
+	BTFSC       STATUS+0, 0 
+	GOTO        L_LoadNonVolatileConstants48
+;Main.c,286 :: 		writebuff[NV_CONST_WRITE_DATA_ADDRESS + i] = EEPROM_Read(NV_CONST_EEPROM_ADDRESS + i);
+	MOVF        LoadNonVolatileConstants_i_L0+0, 0 
+	ADDLW       48
+	MOVWF       R0 
+	CLRF        R1 
+	MOVLW       0
+	ADDWFC      R1, 1 
+	MOVLW       _writebuff+0
+	ADDWF       R0, 0 
+	MOVWF       FLOC__LoadNonVolatileConstants+0 
+	MOVLW       hi_addr(_writebuff+0)
+	ADDWFC      R1, 0 
+	MOVWF       FLOC__LoadNonVolatileConstants+1 
+	MOVF        LoadNonVolatileConstants_i_L0+0, 0 
 	MOVWF       FARG_EEPROM_Read_address+0 
 	CALL        _EEPROM_Read+0, 0
+	MOVFF       FLOC__LoadNonVolatileConstants+0, FSR1
+	MOVFF       FLOC__LoadNonVolatileConstants+1, FSR1H
 	MOVF        R0, 0 
-	MOVWF       1404 
-;Main.c,287 :: 		writebuff[61] = EEPROM_Read(9);                     // Highest(Current_Constant)
-	MOVLW       9
+	MOVWF       POSTINC1+0 
+;Main.c,287 :: 		Delay_ms(5);
+	MOVLW       78
+	MOVWF       R12, 0
+	MOVLW       235
+	MOVWF       R13, 0
+L_LoadNonVolatileConstants50:
+	DECFSZ      R13, 1, 1
+	BRA         L_LoadNonVolatileConstants50
+	DECFSZ      R12, 1, 1
+	BRA         L_LoadNonVolatileConstants50
+;Main.c,284 :: 		for(i = 4; i < 8; i++)
+	INCF        LoadNonVolatileConstants_i_L0+0, 1 
+;Main.c,288 :: 		}
+	GOTO        L_LoadNonVolatileConstants47
+L_LoadNonVolatileConstants48:
+;Main.c,291 :: 		for(i = 8; i < 12; i++)
+	MOVLW       8
+	MOVWF       LoadNonVolatileConstants_i_L0+0 
+L_LoadNonVolatileConstants51:
+	MOVLW       12
+	SUBWF       LoadNonVolatileConstants_i_L0+0, 0 
+	BTFSC       STATUS+0, 0 
+	GOTO        L_LoadNonVolatileConstants52
+;Main.c,293 :: 		writebuff[NV_CONST_WRITE_DATA_ADDRESS + i] = EEPROM_Read(NV_CONST_EEPROM_ADDRESS + i);
+	MOVF        LoadNonVolatileConstants_i_L0+0, 0 
+	ADDLW       48
+	MOVWF       R0 
+	CLRF        R1 
+	MOVLW       0
+	ADDWFC      R1, 1 
+	MOVLW       _writebuff+0
+	ADDWF       R0, 0 
+	MOVWF       FLOC__LoadNonVolatileConstants+0 
+	MOVLW       hi_addr(_writebuff+0)
+	ADDWFC      R1, 0 
+	MOVWF       FLOC__LoadNonVolatileConstants+1 
+	MOVF        LoadNonVolatileConstants_i_L0+0, 0 
 	MOVWF       FARG_EEPROM_Read_address+0 
 	CALL        _EEPROM_Read+0, 0
+	MOVFF       FLOC__LoadNonVolatileConstants+0, FSR1
+	MOVFF       FLOC__LoadNonVolatileConstants+1, FSR1H
 	MOVF        R0, 0 
-	MOVWF       1405 
-;Main.c,290 :: 		writebuff[62] = EEPROM_Read(10);                    // Lo(Current_offset)
-	MOVLW       10
+	MOVWF       POSTINC1+0 
+;Main.c,294 :: 		Delay_ms(5);
+	MOVLW       78
+	MOVWF       R12, 0
+	MOVLW       235
+	MOVWF       R13, 0
+L_LoadNonVolatileConstants54:
+	DECFSZ      R13, 1, 1
+	BRA         L_LoadNonVolatileConstants54
+	DECFSZ      R12, 1, 1
+	BRA         L_LoadNonVolatileConstants54
+;Main.c,291 :: 		for(i = 8; i < 12; i++)
+	INCF        LoadNonVolatileConstants_i_L0+0, 1 
+;Main.c,295 :: 		}
+	GOTO        L_LoadNonVolatileConstants51
+L_LoadNonVolatileConstants52:
+;Main.c,298 :: 		for(i = 12; i < 16; i++)
+	MOVLW       12
+	MOVWF       LoadNonVolatileConstants_i_L0+0 
+L_LoadNonVolatileConstants55:
+	MOVLW       16
+	SUBWF       LoadNonVolatileConstants_i_L0+0, 0 
+	BTFSC       STATUS+0, 0 
+	GOTO        L_LoadNonVolatileConstants56
+;Main.c,300 :: 		writebuff[NV_CONST_WRITE_DATA_ADDRESS + i] = EEPROM_Read(NV_CONST_EEPROM_ADDRESS + i);
+	MOVF        LoadNonVolatileConstants_i_L0+0, 0 
+	ADDLW       48
+	MOVWF       R0 
+	CLRF        R1 
+	MOVLW       0
+	ADDWFC      R1, 1 
+	MOVLW       _writebuff+0
+	ADDWF       R0, 0 
+	MOVWF       FLOC__LoadNonVolatileConstants+0 
+	MOVLW       hi_addr(_writebuff+0)
+	ADDWFC      R1, 0 
+	MOVWF       FLOC__LoadNonVolatileConstants+1 
+	MOVF        LoadNonVolatileConstants_i_L0+0, 0 
 	MOVWF       FARG_EEPROM_Read_address+0 
 	CALL        _EEPROM_Read+0, 0
+	MOVFF       FLOC__LoadNonVolatileConstants+0, FSR1
+	MOVFF       FLOC__LoadNonVolatileConstants+1, FSR1H
 	MOVF        R0, 0 
-	MOVWF       1406 
-;Main.c,291 :: 		writebuff[63] = EEPROM_Read(11);                    // Hi(Current_offset)
-	MOVLW       11
-	MOVWF       FARG_EEPROM_Read_address+0 
-	CALL        _EEPROM_Read+0, 0
-	MOVF        R0, 0 
-	MOVWF       1407 
-;Main.c,292 :: 		}
-L_end_LoadConstantsAndOffsets:
+	MOVWF       POSTINC1+0 
+;Main.c,301 :: 		Delay_ms(5);
+	MOVLW       78
+	MOVWF       R12, 0
+	MOVLW       235
+	MOVWF       R13, 0
+L_LoadNonVolatileConstants58:
+	DECFSZ      R13, 1, 1
+	BRA         L_LoadNonVolatileConstants58
+	DECFSZ      R12, 1, 1
+	BRA         L_LoadNonVolatileConstants58
+;Main.c,298 :: 		for(i = 12; i < 16; i++)
+	INCF        LoadNonVolatileConstants_i_L0+0, 1 
+;Main.c,302 :: 		}
+	GOTO        L_LoadNonVolatileConstants55
+L_LoadNonVolatileConstants56:
+;Main.c,310 :: 		}
+L_end_LoadNonVolatileConstants:
 	RETURN      0
-; end of _LoadConstantsAndOffsets
+; end of _LoadNonVolatileConstants

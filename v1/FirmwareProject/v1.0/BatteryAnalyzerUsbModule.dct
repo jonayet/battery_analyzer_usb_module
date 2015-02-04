@@ -312,8 +312,6 @@ cren
 cren_bit
 csrc
 csrc_bit
-current_constant
-current_offset
 cvr0
 cvr0_bit
 cvr1
@@ -676,8 +674,8 @@ irvst_bit
 ivrst
 ivrst_bit
 last_data
-lastcurrentvalue
-lastvoltagevalue
+lastchannel1value
+lastchannel2value
 lata
 lata0
 lata0_bit
@@ -733,7 +731,7 @@ lcd_en
 lcd_en_direction
 lcd_rs
 lcd_rs_direction
-loadconstantsandoffsets
+loadnonvolatileconstants
 longint2double
 longjmp
 longword2double
@@ -1032,7 +1030,7 @@ rxdtp
 rxdtp_bit
 s
 s_bit
-saveconstantsandoffsets
+savenonvolatileconstants
 sboren
 sboren_bit
 sckp
@@ -1420,8 +1418,6 @@ vdelay_advanced_ms
 vdelay_ms
 vdirmag
 vdirmag_bit
-voltage_constant
-voltage_offset
 vrefm
 vrefm_bit
 vrefp
