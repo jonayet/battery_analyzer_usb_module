@@ -149,9 +149,8 @@ void main()
             UsbNewPacketReceived = 0;
         }
         
-        // Channel 1 to buffer
-        buffIndex = ANALOG_CH1_ADDRESS;
-        for(i = 0; i < 12; i++)
+        // Channel to buffer
+        for(i = 0; i < 24; i += 2)
         {
             // Channel 1
             MCP3304_Read(0);
@@ -173,15 +172,9 @@ void main()
             lastChannel1Value = AbsValue;
             /********************************/
             
-            writebuff[buffIndex] = Lo(MCP3304_Data);
-            writebuff[buffIndex + 1] = Hi(MCP3304_Data);
-            buffIndex += 2;
-        }
-        
-        // Channel 2 to buffer
-        buffIndex = ANALOG_CH2_ADDRESS;
-        for(i = 0; i < 12; i++)
-        {
+            writebuff[ANALOG_CH1_ADDRESS + i] = Lo(MCP3304_Data);
+            writebuff[ANALOG_CH1_ADDRESS + i + 1] = Hi(MCP3304_Data);
+            
             // Channel 2
             MCP3304_Read(2);
 
@@ -202,9 +195,8 @@ void main()
             lastChannel2Value = AbsValue;
             /********************************/
 
-            writebuff[buffIndex] = Lo(MCP3304_Data);
-            writebuff[buffIndex + 1] = Hi(MCP3304_Data);
-            buffIndex += 2;
+            writebuff[ANALOG_CH2_ADDRESS + i] = Lo(MCP3304_Data);
+            writebuff[ANALOG_CH2_ADDRESS + i + 1] = Hi(MCP3304_Data);
         }
         
         ///////////////////// DEBUG - 1ms loop ////////////////

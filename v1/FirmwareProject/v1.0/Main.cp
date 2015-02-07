@@ -188,8 +188,7 @@ void main()
  }
 
 
- buffIndex =  0 ;
- for(i = 0; i < 12; i++)
+ for(i = 0; i < 24; i += 2)
  {
 
  MCP3304_Read(0);
@@ -211,15 +210,9 @@ void main()
  lastChannel1Value = AbsValue;
 
 
- writebuff[buffIndex] =  ((char *)&MCP3304_Data)[0] ;
- writebuff[buffIndex + 1] =  ((char *)&MCP3304_Data)[1] ;
- buffIndex += 2;
- }
+ writebuff[ 0  + i] =  ((char *)&MCP3304_Data)[0] ;
+ writebuff[ 0  + i + 1] =  ((char *)&MCP3304_Data)[1] ;
 
-
- buffIndex =  24 ;
- for(i = 0; i < 12; i++)
- {
 
  MCP3304_Read(2);
 
@@ -240,9 +233,8 @@ void main()
  lastChannel2Value = AbsValue;
 
 
- writebuff[buffIndex] =  ((char *)&MCP3304_Data)[0] ;
- writebuff[buffIndex + 1] =  ((char *)&MCP3304_Data)[1] ;
- buffIndex += 2;
+ writebuff[ 24  + i] =  ((char *)&MCP3304_Data)[0] ;
+ writebuff[ 24  + i + 1] =  ((char *)&MCP3304_Data)[1] ;
  }
 
 
@@ -297,7 +289,7 @@ void SaveNonVolatileConstants(unsigned char musk)
  Delay_ms(5);
  }
  }
-#line 270 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
+#line 262 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
 }
 
 void LoadNonVolatileConstants()
@@ -331,5 +323,5 @@ void LoadNonVolatileConstants()
  writebuff[ 48  + i] = EEPROM_Read( 0  + i);
  Delay_ms(5);
  }
-#line 310 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
+#line 302 "E:/Workplace/Projects/Embedded/PearlEnterprise/EngineAnalyzer/battery_analyzer_usb_module/v1/FirmwareProject/v1.0/Main.c"
 }
